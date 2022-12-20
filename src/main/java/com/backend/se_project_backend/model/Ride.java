@@ -9,7 +9,7 @@ import java.sql.Date;
 @Entity
 public class Ride {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int userId;
     private int bikeId;

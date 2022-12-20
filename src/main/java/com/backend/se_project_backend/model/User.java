@@ -20,25 +20,24 @@ import java.util.Collections;
 @NoArgsConstructor
 @Entity
 public class User implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String userName; //unique username
     private String legalName;
     private String email;
     private String password;
-    private boolean locked;
-    private boolean enabled;
+    private boolean locked = false;
+    private boolean enabled = true;
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User(String userName, String legalName, String email, String password, boolean locked, boolean enabled, UserRole role) {
+    public User(String userName, String legalName, String email, String password, UserRole role) {
         this.userName = userName;
         this.legalName = legalName;
         this.email = email;
         this.password = password;
-        this.locked = locked;
-        this.enabled = enabled;
         this.role = role;
     }
 

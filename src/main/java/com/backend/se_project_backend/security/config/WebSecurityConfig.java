@@ -38,7 +38,8 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    //missing configure method from https://www.youtube.com/watch?v=QwQuro7ekvc&t=4735s min 40 (solved in line 37?)
+    //TODO: missing configure method from https://www.youtube.com/watch?v=QwQuro7ekvc&t=4735s min 40 (solved in line 37?)
+    //looks like it's working
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {

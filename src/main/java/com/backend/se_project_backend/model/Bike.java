@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Bike {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private boolean available;
     private int stationId; //home station

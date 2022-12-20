@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class Station {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int xCoordinate;
     private int yCoordinate;
