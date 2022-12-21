@@ -29,12 +29,13 @@ public class WebSecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v*/registration/**")
+                .antMatchers("/api/v*/registration/**", "/testMe")
                 .permitAll()
                 .anyRequest()
                 .authenticated().and()
                 .formLogin();
         http.authenticationProvider(daoAuthenticationProvider());
+
         return http.build();
     }
 
