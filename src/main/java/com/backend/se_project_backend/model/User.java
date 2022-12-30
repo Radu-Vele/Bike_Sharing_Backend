@@ -2,76 +2,63 @@ package com.backend.se_project_backend.model;
 
 import javax.persistence.*;
 
-import com.backend.se_project_backend.utils.UserRole;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.backend.se_project_backend.utils.UserRoleEnum;
+import lombok.*;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class User implements UserDetails {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "users")
+public class User extends BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String userName; //unique username
-    private String legalName;
+    private String username; //unique username
     private String email;
     private String password;
-    private boolean locked = false;
-    private boolean enabled = true;
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private List<UserRole> roles = new ArrayList<>();
 
-    public User(String userName, String legalName, String email, String password, UserRole role) {
-        this.userName = userName;
-        this.legalName = legalName;
-        this.email = email;
-        this.password = password;
-        this.role = role;
+    public User() {
+
     }
 
+    @Column(nullable = false, unique = true)
     public String getUsername() {
-        return userName;
+        return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return !locked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.role.name());
-        return Collections.singletonList(authority); //?
-    }
-
+    @Column(nullable = false)
     public String getPassword() {
         return password;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Column(nullable = false, unique = true)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRole> roles) {
+        this.roles = roles;
+    }
+
+
 }
