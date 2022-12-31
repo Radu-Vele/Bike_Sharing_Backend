@@ -1,4 +1,4 @@
-package com.backend.se_project_backend.config;
+package com.backend.se_project_backend.utils.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

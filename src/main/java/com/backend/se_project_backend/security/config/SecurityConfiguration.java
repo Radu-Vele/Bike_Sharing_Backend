@@ -12,22 +12,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-
     private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfiguration(JwtFilter jwtFilter, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public SecurityConfiguration(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
