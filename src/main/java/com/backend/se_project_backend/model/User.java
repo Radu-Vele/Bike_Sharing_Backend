@@ -24,6 +24,7 @@ public class User extends BaseEntity implements Serializable {
 
     }
 
+
     @Column(nullable = false, unique = true)
     public String getUsername() {
         return username;
@@ -59,6 +60,4 @@ public class User extends BaseEntity implements Serializable {
     public void setRoles(List<UserRole> roles) {
         this.roles = roles;
     }
-
-
 }

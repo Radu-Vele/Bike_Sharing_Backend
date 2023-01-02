@@ -1,5 +1,6 @@
 package com.backend.se_project_backend.controller;
 
+import com.backend.se_project_backend.model.Account;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.service.UserDetailsService;
 import com.backend.se_project_backend.security.jwt.JwtRequest;
@@ -7,6 +8,7 @@ import com.backend.se_project_backend.security.jwt.JwtResponse;
 import com.backend.se_project_backend.security.jwt.JwtUtility;
 import com.backend.se_project_backend.service.UserService;
 import com.backend.se_project_backend.utils.UserRoleEnum;
+import com.backend.se_project_backend.utils.dto.AccountDTO;
 import com.backend.se_project_backend.utils.dto.UserSignupDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,13 +61,14 @@ public class UserController {
         return new JwtResponse(token);
     }
 
+    //Sign up a new user & account
     @PostMapping("/signup")
     @CrossOrigin
-    public ResponseEntity<?> signup(@RequestBody UserSignupDTO user) {
+    public ResponseEntity<?> signup(@RequestBody AccountDTO user) {
         if (this.userService.userExists(user.getUsername(), user.getEmail())) {
             throw new RuntimeException("Username or email address already in use.");
         }
-        User client = this.userService.register(user);
-        return new ResponseEntity<User>(client, HttpStatus.CREATED);
+        Account client = this.userService.register(user);
+        return new ResponseEntity<Account>(client, HttpStatus.CREATED);
     }
 }
