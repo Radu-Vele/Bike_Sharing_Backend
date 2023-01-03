@@ -71,4 +71,10 @@ public class UserController {
         Account client = this.userService.register(user);
         return new ResponseEntity<Account>(client, HttpStatus.CREATED);
     }
+
+    //return account details
+    @GetMapping("/account-details")
+    public Account showAccountDetails(@RequestParam String username) {
+        return this.userService.findAccountByUsername(username);
+    }
 }

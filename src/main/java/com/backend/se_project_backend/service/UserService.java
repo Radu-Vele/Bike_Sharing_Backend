@@ -13,4 +13,6 @@ public interface UserService {
     boolean userExists(String username, String email);
 
     Account register(AccountDTO user);
+
+    Account findAccountByUsername(String username);
 }
