@@ -1,50 +1,51 @@
 package com.backend.se_project_backend.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+@AllArgsConstructor
 @Entity
-public class Station {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "station")
+public class Station extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
     private int xCoordinate;
     private int yCoordinate;
+    //private int maximumCapacity; //TBD
     private String name;
+    private List<Bike> bikeList = new ArrayList<>();
 
-    public void setId(int id) {
-        this.id = id;
+    public Station() {
+
     }
 
-    @Id
-    public int getId() {
-        return id;
-    }
-
+    @Column(nullable = false)
     public int getXCoordinate() {
         return xCoordinate;
     }
 
-    public void setXCoordinate(int yCoordinate) {
-        this.yCoordinate = yCoordinate;
-    }
-
-    public void setYCoordinate(int xCoordinate) {
+    public void setXCoordinate(int xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public int getYCoordinate() {
-        return yCoordinate;
+    @Column(nullable = false)
+    public int getYCoordinate() { return yCoordinate; }
+
+    public void setYCoordinate(int yCoordinate) { this.yCoordinate = yCoordinate; }
+
+    @Column(nullable = false, unique = true)
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    @OneToMany(fetch = FetchType.LAZY)
+    public List<Bike> getBikeList() {
+        return bikeList;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setBikeList(List<Bike> bikeList) { this.bikeList = bikeList; }
 }

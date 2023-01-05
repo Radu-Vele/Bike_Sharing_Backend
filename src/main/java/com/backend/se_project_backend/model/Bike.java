@@ -1,39 +1,53 @@
 package com.backend.se_project_backend.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
 
+import javax.persistence.*;
+
+@AllArgsConstructor
 @Entity
-public class Bike {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "bike")
+public class Bike extends BaseEntity {
+
     private boolean available;
-    private int stationId; //home station
+    private boolean usable;
+    private Double rating;
+    //private Station station; //home station
 
-    public int getId() {
-        return id;
+    public Bike() {
+
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Column
+    public boolean isAvailable() { return this.available; }
+
+    public void setAvailable(boolean available) { this.available = available; }
+
+    @Column
+    public boolean isUsable() {
+        return usable;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public void setUsable(boolean usable) {
+        this.usable = usable;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    @Column
+    public Double getRating() {
+        return rating;
     }
 
-    public int getStationId() {
-        return stationId;
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
-    public void setStationId(int stationId) {
-        this.stationId = stationId;
-    }
+//    @OneToOne
+//    public Station getStation() {
+//        return station;
+//    }
+//
+//    public void setStation(Station station) {
+//        this.station = station;
+//    }
 }
