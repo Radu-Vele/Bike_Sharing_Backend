@@ -9,6 +9,7 @@ import com.backend.se_project_backend.security.jwt.JwtUtility;
 import com.backend.se_project_backend.service.UserService;
 import com.backend.se_project_backend.utils.UserRoleEnum;
 import com.backend.se_project_backend.utils.dto.AccountDTO;
+import com.backend.se_project_backend.utils.dto.UserEditDTO;
 import com.backend.se_project_backend.utils.dto.UserSignupDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,7 @@ public class UserController {
     @PostMapping("/signup")
     @CrossOrigin
     public ResponseEntity<?> signup(@RequestBody AccountDTO user) {
-        if (this.userService.userExists(user.getUsername(), user.getEmail())) {
+        if (this.userService.userByUsernameExists(user.getUsername()) || this.userService.userByEmailExists(user.getEmail())) {
             throw new RuntimeException("Username or email address already in use.");
         }
         Account client = this.userService.register(user);
@@ -74,7 +75,28 @@ public class UserController {
 
     //return account details
     @GetMapping("/account-details")
+    @CrossOrigin
     public Account showAccountDetails(@RequestParam String username) {
         return this.userService.findAccountByUsername(username);
+    }
+
+    @DeleteMapping("/delete-account")
+    @CrossOrigin
+    public ResponseEntity<?> deleteAccount(@RequestParam String username) {
+        if (!this.userService.userByUsernameExists(username)) {
+            return new ResponseEntity<>(username, HttpStatus.NOT_FOUND);
+        }
+        this.userService.delete(username);
+        return new ResponseEntity<>(username, HttpStatus.OK);
+    }
+
+    @PutMapping("/edit-account")
+    @CrossOrigin
+    public ResponseEntity<?> editAccount(@RequestBody UserEditDTO userEditDTO) {
+        if(!this.userService.userByUsernameExists(userEditDTO.getUsername())) {
+            return new ResponseEntity<>(userEditDTO.getUsername(), HttpStatus.NOT_FOUND);
+        }
+        Account client = this.userService.edit(userEditDTO);
+        return new ResponseEntity<Account>(client, HttpStatus.CREATED);
     }
 }
