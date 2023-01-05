@@ -7,6 +7,7 @@ import com.backend.se_project_backend.repository.AccountsRepository;
 import com.backend.se_project_backend.repository.UserRepository;
 import com.backend.se_project_backend.utils.UserRoleEnum;
 import com.backend.se_project_backend.utils.dto.AccountDTO;
+import com.backend.se_project_backend.utils.dto.UserEditDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,10 +48,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean userExists(String username, String email) {
+    public boolean userByUsernameExists(String username) {
         Optional<User> byUsername = this.userRepository.findByUsername(username);
+        return byUsername.isPresent();
+    }
+
+    @Override
+    public boolean userByEmailExists(String email) {
         Optional<User> byEmail = this.userRepository.findByEmail(email);
-        return byUsername.isPresent() || byEmail.isPresent();
+        return byEmail.isPresent();
     }
 
     @Override
@@ -65,5 +71,22 @@ public class UserServiceImpl implements UserService{
     @Override
     public Account findAccountByUsername(String username) {
         return this.accountsRepository.findByUsername(username).orElseThrow();
+    }
+
+    @Override
+    public void delete(String username) {
+        Optional<User> user = this.userRepository.findByUsername(username);
+        user.ifPresent(value -> this.userRepository.deleteById(value.getId()));
+    }
+
+    @Override
+    public Account edit(UserEditDTO userEditDTO) {
+        Optional<Account> user = this.accountsRepository.findByUsername(userEditDTO.getUsername());
+        if(user.isPresent()) {
+            user.get().setLegalName(userEditDTO.getLegalName());
+            user.get().setPhoneNumber(userEditDTO.getPhoneNumber());
+            return accountsRepository.save(user.get());
+        }
+        return null;
     }
 }
