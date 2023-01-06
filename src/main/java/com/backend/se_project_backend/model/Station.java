@@ -13,8 +13,8 @@ import java.util.List;
 @Table(name = "station")
 public class Station extends BaseEntity {
 
-    private int xCoordinate;
-    private int yCoordinate;
+    private Double xCoordinate;
+    private Double yCoordinate;
     //private int maximumCapacity; //TBD
     private String name;
     private List<Bike> bikeList = new ArrayList<>();
@@ -24,18 +24,18 @@ public class Station extends BaseEntity {
     }
 
     @Column(nullable = false)
-    public int getXCoordinate() {
+    public Double getXCoordinate() {
         return xCoordinate;
     }
 
-    public void setXCoordinate(int xCoordinate) {
+    public void setXCoordinate(Double xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
     @Column(nullable = false)
-    public int getYCoordinate() { return yCoordinate; }
+    public Double getYCoordinate() { return yCoordinate; }
 
-    public void setYCoordinate(int yCoordinate) { this.yCoordinate = yCoordinate; }
+    public void setYCoordinate(Double yCoordinate) { this.yCoordinate = yCoordinate; }
 
     @Column(nullable = false, unique = true)
     public String getName() { return name; }
