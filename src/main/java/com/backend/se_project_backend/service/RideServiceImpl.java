@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -41,7 +42,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Ride startRide(RideDTO ride) {
+    public boolean startRide(RideDTO ride) {
         Ride newRide = new Ride();
         newRide.startTime();
         newRide.setStartStationId(ride.getStartStationId());
@@ -49,27 +50,42 @@ public class RideServiceImpl implements RideService {
         newRide.setBikeId(ride.getBikeId());
         newRide.setUsername(ride.getUsername());
 
-        User user = userService.findUserByUsername(ride.getUsername());
-        user.setCurrentRide(newRide);
-        user.setActiveRide(true);
-        if (stationService.removeBike(newRide.getStartStationId(), newRide.getBikeId()))
-            return rideRepository.save(newRide);
-        return null;
+        if (stationService.removeBike(newRide.getStartStationId(), newRide.getBikeId())) {
+            rideRepository.save(newRide);
+            userService.editStartRide(newRide, ride.getUsername());
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public Ride endRide(Ride ride) {
+    public boolean endRide(long rideId) {
+        Ride ride = findRideById(rideId);
         ride.setCompleted(true);
         ride.endTime();
-        User user = userService.findUserByUsername(ride.getUsername());
-        user.setActiveRide(false);
-        Account account = userService.findAccountByUsername(ride.getUsername());
-        account.addRide(ride);
-        if (stationService.addBike(ride.getEndStationId(), ride.getBikeId()))
-            return rideRepository.save(ride);
-        return null;
+
+        if (stationService.addBike(ride.getEndStationId(), ride.getBikeId())) {
+            rideRepository.save(ride);
+            userService.editEndRide(ride, ride.getUsername());
+            return true;
+        }
+
+        return false;
     }
 
+    @Override
+    public List<Ride> findRidesByUser(String username) {
+            if (userService.userByUsernameExists(username)) {
+                Account account = userService.findAccountByUsername(username);
+                return account.getRideList();
+            }
+            return null;
+    }
+
+    @Override
+    public Ride findRideById(long rideId) {
+        return this.rideRepository.findById(rideId).orElseThrow();
+    }
 
 
 }

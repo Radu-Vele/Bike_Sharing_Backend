@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "rides")
+@Table(name = "ride")
 public class Ride extends BaseEntity{
 
     private int bikeId;
