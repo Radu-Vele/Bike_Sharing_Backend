@@ -49,4 +49,8 @@ public class Account extends User implements Serializable {
     public void setRideList(List<Ride> rideList) {
         this.rideList = rideList;
     }
+
+    public void addRide(Ride ride) {
+        this.rideList.add(ride);
+    }
 }

@@ -18,10 +18,13 @@ public class User extends BaseEntity implements Serializable {
     private String username; //unique username
     private String email;
     private String password;
+
+    private Ride currentRide;
+    private boolean activeRide;
     private List<UserRole> roles = new ArrayList<>();
 
     public User() {
-
+        activeRide = false;
     }
 
 
@@ -59,5 +62,22 @@ public class User extends BaseEntity implements Serializable {
 
     public void setRoles(List<UserRole> roles) {
         this.roles = roles;
+    }
+
+    @OneToOne
+    public Ride getCurrentRide() {
+        return currentRide;
+    }
+
+    public void setCurrentRide(Ride currentRide) {
+        this.currentRide = currentRide;
+    }
+
+    public boolean isActiveRide() {
+        return activeRide;
+    }
+
+    public void setActiveRide(boolean activeRide) {
+        this.activeRide = activeRide;
     }
 }
