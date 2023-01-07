@@ -1,6 +1,7 @@
 package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.model.Account;
+import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.utils.dto.AccountDTO;
 import com.backend.se_project_backend.utils.dto.UserEditDTO;
@@ -22,4 +23,7 @@ public interface UserService {
     void delete(String username);
 
     Account edit(UserEditDTO userEditDTO);
+
+    Account editStartRide(Ride ride, String username);
+    Account editEndRide(Ride ride, String username);
 }

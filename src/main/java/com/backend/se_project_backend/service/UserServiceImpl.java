@@ -1,6 +1,7 @@
 package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.model.Account;
+import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.model.UserRole;
 import com.backend.se_project_backend.repository.AccountsRepository;
@@ -86,6 +87,33 @@ public class UserServiceImpl implements UserService{
             user.get().setLegalName(userEditDTO.getLegalName());
             user.get().setPhoneNumber(userEditDTO.getPhoneNumber());
             return accountsRepository.save(user.get());
+        }
+        return null;
+    }
+
+    @Override
+    public Account editStartRide(Ride ride, String username) {
+        Optional<Account> user = this.accountsRepository.findByUsername(username);
+        if(user.isPresent()) {
+            if (!user.get().isActiveRide()) {
+                user.get().setCurrentRide(ride);
+                user.get().setActiveRide(true);
+                return accountsRepository.save(user.get());
+            }
+        }
+        return null;
+    }
+    @Override
+    public Account editEndRide(Ride ride, String username) {
+        Optional<Account> user = this.accountsRepository.findByUsername(username);
+        if(user.isPresent()) {
+            if (user.get().isActiveRide()) {
+                user.get().setActiveRide(false);
+                Account account = findAccountByUsername(username);
+                account.addRide(ride);
+                accountsRepository.save(account);
+                return accountsRepository.save(user.get());
+            }
         }
         return null;
     }
