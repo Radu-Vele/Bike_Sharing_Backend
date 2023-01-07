@@ -7,27 +7,31 @@ import java.util.List;
 
 public class StationDTO {
 
-    private int xCoordinate;
-    private int yCoordinate;
-    //private int maximumCapacity; //TBD
+    private Double xCoordinate;
+    private Double yCoordinate;
+    private long maximumCapacity; //TBD
     private String name;
     private List<Bike> bikeList = new ArrayList<>();
 
-    public int getxCoordinate() {
+    public Double getxCoordinate() {
         return xCoordinate;
     }
 
-    public void setxCoordinate(int xCoordinate) {
+    public void setxCoordinate(Double xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public int getyCoordinate() {
+    public Double getyCoordinate() {
         return yCoordinate;
     }
 
-    public void setyCoordinate(int yCoordinate) {
+    public void setyCoordinate(Double yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
+
+    public long getMaximumCapacity() { return maximumCapacity; }
+
+    public void setMaximumCapacity(long maximumCapacity) { this.maximumCapacity = maximumCapacity; }
 
     public String getName() {
         return name;
