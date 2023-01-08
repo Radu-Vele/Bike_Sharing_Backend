@@ -77,5 +77,9 @@ public class StationController {
     @CrossOrigin
     public ArrayList<Station> getListOfUsableStations() { return this.stationService.getUsableStartStations(); }
 
+    @GetMapping ("/get-free-stations")
+    @CrossOrigin
+    public ArrayList<Station> getListOfFreeStations() { return this.stationService.getFreeEndStations(); }
+
 
 }
