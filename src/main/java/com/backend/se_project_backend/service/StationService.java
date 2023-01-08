@@ -4,6 +4,8 @@ import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.utils.dto.BikeDTO;
 
+import java.util.ArrayList;
+
 public interface StationService {
 
     boolean addBike(long stationId, long bikeId);
@@ -15,5 +17,15 @@ public interface StationService {
     void delete(long stationId);
 
     String getStationNameById(long stationId);
+
+    ArrayList<Station> getStations();
+
+    long getFreeSlotsByStationId(long stationId);
+
+    ArrayList<Bike> getUsableBikesByStationId(long stationId);
+
+    ArrayList<Station> getUsableStartStations();
+
+    ArrayList<Station> getFreeEndStations();
 
 }

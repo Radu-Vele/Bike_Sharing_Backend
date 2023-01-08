@@ -15,7 +15,7 @@ public class Station extends BaseEntity {
 
     private Double xCoordinate;
     private Double yCoordinate;
-    //private int maximumCapacity; //TBD
+    private long maximumCapacity;
     private String name;
     private List<Bike> bikeList = new ArrayList<>();
 
@@ -36,6 +36,11 @@ public class Station extends BaseEntity {
     public Double getYCoordinate() { return yCoordinate; }
 
     public void setYCoordinate(Double yCoordinate) { this.yCoordinate = yCoordinate; }
+
+    @Column(nullable = false)
+    public long getMaximumCapacity() { return maximumCapacity; }
+
+    public void setMaximumCapacity(long maximumCapacity) { this.maximumCapacity = maximumCapacity; }
 
     @Column(nullable = false, unique = true)
     public String getName() { return name; }
