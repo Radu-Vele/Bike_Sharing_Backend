@@ -12,7 +12,7 @@ public interface RideService {
     boolean endRide(long rideId);
     boolean startRide(RideDTO ride);
     List<Ride> findRidesByUser(String username);
-   Ride findRideById(long rideId);
+    Ride findRideById(long rideId);
 
 
 }

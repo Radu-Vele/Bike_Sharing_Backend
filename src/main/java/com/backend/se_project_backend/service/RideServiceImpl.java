@@ -2,7 +2,6 @@ package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.model.Account;
 import com.backend.se_project_backend.model.Ride;
-import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.RideRepository;
 import com.backend.se_project_backend.utils.dto.RideDTO;
 import org.modelmapper.ModelMapper;
@@ -22,13 +21,15 @@ public class RideServiceImpl implements RideService {
 
     private final StationService stationService;
     private final UserService userService;
+    private final RecommenderService recommenderService;
 
     @Autowired
-    public RideServiceImpl(RideRepository rideRepository, ModelMapper modelMapper, StationService stationService, UserService userService) {
+    public RideServiceImpl(RideRepository rideRepository, ModelMapper modelMapper, StationService stationService, UserService userService, RecommenderService recommenderService) {
         this.rideRepository = rideRepository;
         this.modelMapper = modelMapper;
         this.stationService = stationService;
         this.userService = userService;
+        this.recommenderService = recommenderService;
     }
 
     @Override
@@ -49,10 +50,13 @@ public class RideServiceImpl implements RideService {
         newRide.setEndStationId(ride.getEndStationId());
         newRide.setBikeId(ride.getBikeId());
         newRide.setUsername(ride.getUsername());
+        String path = recommenderService.dijkstra(newRide.getStartStationId(), newRide.getEndStationId());
+        newRide.setRecommendation(path);
 
         if (stationService.removeBike(newRide.getStartStationId(), newRide.getBikeId())) {
             rideRepository.save(newRide);
             userService.editStartRide(newRide, ride.getUsername());
+            System.out.println(path);
             return true;
         }
         return false;
