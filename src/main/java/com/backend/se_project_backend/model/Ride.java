@@ -22,6 +22,15 @@ public class Ride extends BaseEntity{
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean completed;
+    private String recommendation;
+
+    public String getRecommendation() {
+        return recommendation;
+    }
+
+    public void setRecommendation(String recommendation) {
+        this.recommendation = recommendation;
+    }
 
     public Ride() {
         this.completed = false;
