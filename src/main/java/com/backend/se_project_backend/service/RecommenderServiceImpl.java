@@ -40,9 +40,12 @@ public class RecommenderServiceImpl implements RecommenderService{
 
     private int timeMatrix[][] = new int[size][size];
 
-    @Autowired
-    public RecommenderServiceImpl() {
+    private final StationService stationService;
 
+    @Autowired
+    public RecommenderServiceImpl(StationService stationService) {
+
+        this.stationService = stationService;
     }
 
 
@@ -103,8 +106,29 @@ public class RecommenderServiceImpl implements RecommenderService{
                 return path;
             }
             path = getPath(parents, parents[endId], path);
-            path = path + " -> " + Integer.toString(++endId);
+
+            path = path + " -> " + getStationName(endId);
             return path;
+    }
+
+    private String getStationName(int endId) {
+        endId++;
+        String stationName = stationService.getStationNameById(endId);
+        if(stationName.equals("")) {
+            switch (endId) {
+                case 1:
+                    return "1st Street";
+                case 2:
+                    return "2nd Street";
+                case 3:
+                    return "3rd Street";
+                default:
+                    return Integer.toString(endId) + "th Street";
+            }
+        }
+        else {
+            return stationName;
+        }
     }
 
 

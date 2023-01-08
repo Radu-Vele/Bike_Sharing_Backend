@@ -61,4 +61,14 @@ public class StationServiceImpl implements StationService {
         Optional<Station> station = this.stationRepository.findById(stationId);
         station.ifPresent(value -> this.stationRepository.deleteById(value.getId()));
     }
+
+    public String getStationNameById(long stationId) {
+        Optional<Station> stationById = this.stationRepository.findById(stationId);
+        if (stationById.isPresent()) {
+            return stationById.get().getName();
+        }
+        else return "";
+    }
+
+
 }

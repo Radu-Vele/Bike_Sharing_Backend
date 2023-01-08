@@ -14,4 +14,6 @@ public interface StationService {
 
     void delete(long stationId);
 
+    String getStationNameById(long stationId);
+
 }
