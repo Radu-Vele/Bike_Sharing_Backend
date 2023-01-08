@@ -16,6 +16,8 @@ public interface StationService {
 
     void delete(long stationId);
 
+    String getStationNameById(long stationId);
+
     ArrayList<Station> getStations();
 
     long getFreeSlotsByStationId(long stationId);
