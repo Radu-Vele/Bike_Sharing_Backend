@@ -73,5 +73,9 @@ public class StationController {
         return this.stationService.getUsableBikesByStationId(stationId);
     }
 
+    @GetMapping ("/get-usable-stations")
+    @CrossOrigin
+    public ArrayList<Station> getListOfUsableStations() { return this.stationService.getUsableStartStations(); }
+
 
 }

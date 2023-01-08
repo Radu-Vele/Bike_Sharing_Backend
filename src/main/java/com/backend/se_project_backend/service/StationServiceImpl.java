@@ -91,4 +91,42 @@ public class StationServiceImpl implements StationService {
         }
         else return new ArrayList<>(); //dacă nu există stationId cerut
     }
+
+    @Override
+    public ArrayList<Station> getUsableStartStations() {
+        ArrayList<Station> listOfStations = getStations();
+        ArrayList<Station> toBeRemoved = new ArrayList<>();
+        for (Station station : listOfStations) {
+            if(getUsableBikesByStationId(station.getId()).isEmpty()) {
+                toBeRemoved.add(station);
+            }
+        }
+        if (listOfStations.isEmpty()) {
+            return new ArrayList<>();
+        }
+        if (toBeRemoved.isEmpty()) {
+            return listOfStations;
+        }
+        listOfStations.removeAll(toBeRemoved);
+        return listOfStations;
+    }
+
+    @Override
+    public ArrayList<Station> getFreeEndStations() {
+        ArrayList<Station> listOfStations = getStations();
+        ArrayList<Station> toBeRemoved = new ArrayList<>();
+        for (Station station : listOfStations) {
+            if(getFreeSlotsByStationId(station.getId()) == 0) {
+                toBeRemoved.add(station);
+            }
+        }
+        if (listOfStations.isEmpty()) {
+            return new ArrayList<>();
+        }
+        if (toBeRemoved.isEmpty()) {
+            return listOfStations;
+        }
+        listOfStations.removeAll(toBeRemoved);
+        return listOfStations;
+    }
 }

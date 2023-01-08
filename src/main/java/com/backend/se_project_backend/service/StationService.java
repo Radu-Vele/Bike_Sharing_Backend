@@ -22,4 +22,8 @@ public interface StationService {
 
     ArrayList<Bike> getUsableBikesByStationId(long stationId);
 
+    ArrayList<Station> getUsableStartStations();
+
+    ArrayList<Station> getFreeEndStations();
+
 }
