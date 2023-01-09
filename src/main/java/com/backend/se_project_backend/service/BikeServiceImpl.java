@@ -44,18 +44,22 @@ public class BikeServiceImpl implements BikeService {
         Optional<Bike> bikeById = bikeById(bikeId);
         if (bikeById.isPresent()) {
             Double previousRating = bikeById.get().getRating();
-            if (previousRating == 0)
-                bikeById.get().setRating(currentRating);
-            else if (currentRating == 1) {
-                bikeById.get().setUsable(false);
+            if (previousRating == 0) {
+                bikeById.get().setRating(currentRating); //allow bikes to be initialized with 0 and be usable
             }
             else {
-                bikeById.get().setRating((previousRating + currentRating) / 2);
+                if (currentRating == 1) {
+                    bikeById.get().setUsable(false);
+                }
+                else {
+                    bikeById.get().setRating((previousRating + currentRating) / 2);
+                }
+
+                if (bikeById.get().getRating() < 2.5) {
+                    bikeById.get().setUsable(false);
+                }
             }
 
-            if (bikeById.get().getRating() < 2.5) {
-                bikeById.get().setUsable(false);
-            }
             return true;
         }
         else return false;
