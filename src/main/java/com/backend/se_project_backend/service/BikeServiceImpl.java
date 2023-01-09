@@ -46,8 +46,16 @@ public class BikeServiceImpl implements BikeService {
             Double previousRating = bikeById.get().getRating();
             if (previousRating == 0)
                 bikeById.get().setRating(currentRating);
-            else bikeById.get().setRating((previousRating + currentRating) / 2);
-            if (bikeById.get().getRating() < 2.5) bikeById.get().setUsable(false);
+            else if (currentRating == 1) {
+                bikeById.get().setUsable(false);
+            }
+            else {
+                bikeById.get().setRating((previousRating + currentRating) / 2);
+            }
+
+            if (bikeById.get().getRating() < 2.5) {
+                bikeById.get().setUsable(false);
+            }
             return true;
         }
         else return false;
