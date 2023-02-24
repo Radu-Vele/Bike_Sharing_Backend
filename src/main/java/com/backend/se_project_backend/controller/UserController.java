@@ -12,6 +12,7 @@ import com.backend.se_project_backend.utils.dto.AccountDTO;
 import com.backend.se_project_backend.utils.dto.UserEditDTO;
 import com.backend.se_project_backend.utils.dto.UserSignupDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -32,7 +35,9 @@ public class UserController {
 
     @PostMapping("/login")
     @CrossOrigin
-    public String logInUser(@RequestParam String username) {
+    public String logInUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String token = auth.substring(7);
+        String username = jwtUtility.getUsernameFromToken(token);
         User userByUsername = this.userService.findUserByUsername(username);
         if (userByUsername.getRoles().stream()
                 .anyMatch(u -> u.getRole().equals(UserRoleEnum.USER))) {
