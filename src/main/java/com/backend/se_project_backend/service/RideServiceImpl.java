@@ -1,7 +1,7 @@
 package com.backend.se_project_backend.service;
 
-import com.backend.se_project_backend.model.Account;
 import com.backend.se_project_backend.model.Ride;
+import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.RideRepository;
 import com.backend.se_project_backend.utils.dto.RideDTO;
 import org.modelmapper.ModelMapper;
@@ -79,17 +79,15 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public List<Ride> findRidesByUser(String username) {
-            if (userService.userByUsernameExists(username)) {
-                Account account = userService.findAccountByUsername(username);
-                return account.getRideList();
-            }
-            return null;
+        if (userService.userByUsernameExists(username)) {
+            User user = userService.findUserByUsername(username);
+            return user.getRideList();
+        }
+        return null;
     }
 
     @Override
     public Ride findRideById(long rideId) {
         return this.rideRepository.findById(rideId).orElseThrow();
     }
-
-
 }

@@ -1,7 +1,5 @@
 package com.backend.se_project_backend.controller;
 
-import com.backend.se_project_backend.model.Account;
-import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.service.RideService;
 import com.backend.se_project_backend.utils.dto.RideDTO;
@@ -44,9 +42,4 @@ public class RideController {
     public List<Ride> showRidesByUser(@RequestParam String username) {
         return this.rideService.findRidesByUser(username);
     }
-
-
-
-
-
 }

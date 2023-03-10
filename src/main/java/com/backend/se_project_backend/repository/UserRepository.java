@@ -1,15 +1,10 @@
 package com.backend.se_project_backend.repository;
 import com.backend.se_project_backend.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-@Repository
-@Transactional(readOnly = true)
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String userName);
+public interface UserRepository extends MongoRepository<User, String> {
+    Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
 }

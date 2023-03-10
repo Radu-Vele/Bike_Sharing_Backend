@@ -1,6 +1,6 @@
 package com.backend.se_project_backend.utils.dto;
 
-public class AccountDTO {
+public class UserDTO {
     private String username;
     private String email;
     private String password;

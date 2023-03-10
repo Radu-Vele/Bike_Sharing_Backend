@@ -30,7 +30,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     private UserDetails mapToUserDetails(com.backend.se_project_backend.model.User user) {
 
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(ur -> new SimpleGrantedAuthority("ROLE_" + ur.getRole().name())).collect(Collectors.toList());
+                .map(ur -> new SimpleGrantedAuthority("ROLE_" + ur.name())).collect(Collectors.toList());
 
         return new User(
                 user.getUsername(),

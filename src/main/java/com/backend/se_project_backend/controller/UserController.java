@@ -1,6 +1,5 @@
 package com.backend.se_project_backend.controller;
 
-import com.backend.se_project_backend.model.Account;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.service.UserDetailsService;
 import com.backend.se_project_backend.security.jwt.JwtRequest;
@@ -8,9 +7,8 @@ import com.backend.se_project_backend.security.jwt.JwtResponse;
 import com.backend.se_project_backend.security.jwt.JwtUtility;
 import com.backend.se_project_backend.service.UserService;
 import com.backend.se_project_backend.utils.UserRoleEnum;
-import com.backend.se_project_backend.utils.dto.AccountDTO;
+import com.backend.se_project_backend.utils.dto.UserDTO;
 import com.backend.se_project_backend.utils.dto.UserEditDTO;
-import com.backend.se_project_backend.utils.dto.UserSignupDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,8 +18,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -40,7 +36,7 @@ public class UserController {
         String username = jwtUtility.getUsernameFromToken(token);
         User userByUsername = this.userService.findUserByUsername(username);
         if (userByUsername.getRoles().stream()
-                .anyMatch(u -> u.getRole().equals(UserRoleEnum.USER))) {
+                .anyMatch(u -> u.equals(UserRoleEnum.USER))) {
             return "USER";
         }
         return null;
@@ -70,19 +66,19 @@ public class UserController {
     //Sign up a new user & account
     @PostMapping("/signup")
     @CrossOrigin
-    public ResponseEntity<?> signup(@RequestBody AccountDTO user) {
+    public ResponseEntity<?> signup(@RequestBody UserDTO user) {
         if (this.userService.userByUsernameExists(user.getUsername()) || this.userService.userByEmailExists(user.getEmail())) {
             throw new RuntimeException("Username or email address already in use.");
         }
-        Account client = this.userService.register(user);
-        return new ResponseEntity<Account>(client, HttpStatus.CREATED);
+        User client = this.userService.register(user);
+        return new ResponseEntity<User>(client, HttpStatus.CREATED);
     }
 
     //return account details
     @GetMapping("/account-details")
     @CrossOrigin
-    public Account showAccountDetails(@RequestParam String username) {
-        return this.userService.findAccountByUsername(username);
+    public User showAccountDetails(@RequestParam String username) {
+        return this.userService.findUserByUsername(username);
     }
 
     @DeleteMapping("/delete-account")
@@ -101,7 +97,7 @@ public class UserController {
         if(!this.userService.userByUsernameExists(userEditDTO.getUsername())) {
             return new ResponseEntity<>(userEditDTO.getUsername(), HttpStatus.NOT_FOUND);
         }
-        Account client = this.userService.edit(userEditDTO);
-        return new ResponseEntity<Account>(client, HttpStatus.CREATED);
+        User client = this.userService.edit(userEditDTO);
+        return new ResponseEntity<User>(client, HttpStatus.CREATED);
     }
 }
