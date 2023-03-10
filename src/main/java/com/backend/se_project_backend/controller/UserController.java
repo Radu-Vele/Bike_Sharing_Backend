@@ -1,10 +1,9 @@
 package com.backend.se_project_backend.controller;
 
 import com.backend.se_project_backend.model.User;
-import com.backend.se_project_backend.service.UserDetailsService;
-import com.backend.se_project_backend.security.jwt.JwtRequest;
-import com.backend.se_project_backend.security.jwt.JwtResponse;
-import com.backend.se_project_backend.security.jwt.JwtUtility;
+import com.backend.se_project_backend.config.jwt.JwtRequest;
+import com.backend.se_project_backend.config.jwt.JwtResponse;
+import com.backend.se_project_backend.config.jwt.JwtUtility;
 import com.backend.se_project_backend.service.UserService;
 import com.backend.se_project_backend.utils.UserRoleEnum;
 import com.backend.se_project_backend.utils.dto.UserDTO;
@@ -14,9 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,40 +23,27 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtility jwtUtility;
-    private final UserDetailsService userDetailsService;
 
     @PostMapping("/login")
     @CrossOrigin
-    public String logInUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
-        String token = auth.substring(7);
-        String username = jwtUtility.getUsernameFromToken(token);
+    public ResponseEntity<?> logInUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         User userByUsername = this.userService.findUserByUsername(username);
-        if (userByUsername.getRoles().stream()
-                .anyMatch(u -> u.equals(UserRoleEnum.USER))) {
-            return "USER";
+
+        if (userByUsername.getRole().equals(UserRoleEnum.USER)) {
+            return ResponseEntity.ok("USER");
         }
+        else if(userByUsername.getRole().equals(UserRoleEnum.ADMIN)) {
+            return ResponseEntity.ok("ADMIN");
+        }
+        //failed login
         return null;
     }
 
     @PostMapping("/authenticate")
     @CrossOrigin
-    public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            jwtRequest.getUsername(),
-                            jwtRequest.getPassword()
-                    )
-            );
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
-        final UserDetails userDetails
-                = userDetailsService.loadUserByUsername(jwtRequest.getUsername());
-
-        final String token =
-                jwtUtility.generateToken(userDetails);
-        return new JwtResponse(token);
+    public ResponseEntity<JwtResponse> authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
+        return ResponseEntity.ok(userService.authenticate(jwtRequest));
     }
 
     //Sign up a new user & account
@@ -70,8 +53,8 @@ public class UserController {
         if (this.userService.userByUsernameExists(user.getUsername()) || this.userService.userByEmailExists(user.getEmail())) {
             throw new RuntimeException("Username or email address already in use.");
         }
-        User client = this.userService.register(user);
-        return new ResponseEntity<User>(client, HttpStatus.CREATED);
+        User registeredUser = this.userService.register(user);
+        return new ResponseEntity<User>(registeredUser, HttpStatus.CREATED);
     }
 
     //return account details

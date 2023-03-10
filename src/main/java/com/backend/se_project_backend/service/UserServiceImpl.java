@@ -1,12 +1,17 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.config.jwt.JwtRequest;
+import com.backend.se_project_backend.config.jwt.JwtResponse;
+import com.backend.se_project_backend.config.jwt.JwtUtility;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.UserRepository;
 import com.backend.se_project_backend.utils.dto.UserDTO;
 import com.backend.se_project_backend.utils.dto.UserEditDTO;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,19 +20,14 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserRoleService userRoleService, ModelMapper modelMapper) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.modelMapper = modelMapper;
-    }
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtility jwtUtility;
 
     @Override
     public User findUserByUsername(String username) {
@@ -59,6 +59,21 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public JwtResponse authenticate(JwtRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
+        var user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow();
+
+        final String token = jwtUtility.generateToken(user);
+        return new JwtResponse(token);
+    }
+
+    @Override
     public void delete(String username) {
         Optional<User> user = this.userRepository.findByUsername(username);
         user.ifPresent(value -> this.userRepository.deleteById(value.getId()));
@@ -79,9 +94,9 @@ public class UserServiceImpl implements UserService{
     public User editStartRide(Ride ride, String username) {
         Optional<User> user = this.userRepository.findByUsername(username);
         if(user.isPresent()) {
-            if (!user.get().isActiveRide()) {
+            if (!user.get().isHasActiveRide()) {
                 user.get().setCurrentRide(ride);
-                user.get().setActiveRide(true);
+                user.get().setHasActiveRide(true);
                 return userRepository.save(user.get());
             }
         }
@@ -91,8 +106,8 @@ public class UserServiceImpl implements UserService{
     public User editEndRide(Ride ride, String username) {
         Optional<User> user = this.userRepository.findByUsername(username);
         if(user.isPresent()) {
-            if (user.get().isActiveRide()) {
-                user.get().setActiveRide(false);
+            if (user.get().isHasActiveRide()) {
+                user.get().setHasActiveRide(false);
                 return userRepository.save(user.get());
             }
         }

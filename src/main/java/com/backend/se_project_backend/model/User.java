@@ -6,12 +6,18 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.ArrayList;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.util.Collection;
 import java.util.List;
 
 @NoArgsConstructor
 @Document(collection = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     private String id;
 
@@ -26,12 +32,13 @@ public class User {
     @NonNull
     private String password;
 
-    private List<UserRoleEnum> roles = new ArrayList<>(); //embed roles for each user
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum role; //embed roles for each user
 
-    private boolean activeRide = false; //TODO: to rename to hasActiveRide
+    private boolean hasActiveRide = false;
 
     @DBRef
-    private Ride currentRide; //TODO: Should it be here or in the Account?
+    private Ride currentRide;
 
     private String legalName;
 
@@ -57,9 +64,40 @@ public class User {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * TODO: Might help me with email validation
+     */
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
     @NonNull
     public String getEmail() {
         return email;
+    }
+
+    /**
+     * Return the list of authorities associated to the user's role
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @NonNull
@@ -68,12 +106,12 @@ public class User {
     }
 
     @NonNull
-    public List<UserRoleEnum> getRoles() {
-        return roles;
+    public UserRoleEnum getRole() {
+        return role;
     }
 
-    public boolean isActiveRide() {
-        return activeRide;
+    public boolean isHasActiveRide() {
+        return hasActiveRide;
     }
 
     public Ride getCurrentRide() {
@@ -92,12 +130,12 @@ public class User {
         this.password = password;
     }
 
-    public void setRoles(@NonNull List<UserRoleEnum> roles) {
-        this.roles = roles;
+    public void setRole(@NonNull UserRoleEnum role) {
+        this.role = role;
     }
 
-    public void setActiveRide(boolean activeRide) {
-        this.activeRide = activeRide;
+    public void setHasActiveRide(boolean hasActiveRide) {
+        this.hasActiveRide = hasActiveRide;
     }
 
     public void setCurrentRide(Ride currentRide) {

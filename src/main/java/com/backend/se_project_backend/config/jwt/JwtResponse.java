@@ -1,4 +1,4 @@
-package com.backend.se_project_backend.security.jwt;
+package com.backend.se_project_backend.config.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

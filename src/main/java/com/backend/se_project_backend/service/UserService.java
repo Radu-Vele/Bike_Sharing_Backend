@@ -1,5 +1,7 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.config.jwt.JwtRequest;
+import com.backend.se_project_backend.config.jwt.JwtResponse;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.utils.dto.UserDTO;
@@ -21,4 +23,6 @@ public interface UserService {
     User editStartRide(Ride ride, String username);
 
     User editEndRide(Ride ride, String username);
+
+    JwtResponse authenticate(JwtRequest request);
 }
