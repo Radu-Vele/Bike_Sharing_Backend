@@ -46,7 +46,6 @@ public class UserController {
         return ResponseEntity.ok(userService.authenticate(jwtRequest));
     }
 
-    //Sign up a new user & account
     @PostMapping("/signup")
     @CrossOrigin
     public ResponseEntity<?> signup(@RequestBody UserDTO user) {
@@ -57,16 +56,17 @@ public class UserController {
         return new ResponseEntity<User>(registeredUser, HttpStatus.CREATED);
     }
 
-    //return account details
     @GetMapping("/account-details")
     @CrossOrigin
-    public User showAccountDetails(@RequestParam String username) {
+    public User showAccountDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         return this.userService.findUserByUsername(username);
     }
 
     @DeleteMapping("/delete-account")
     @CrossOrigin
-    public ResponseEntity<?> deleteAccount(@RequestParam String username) {
+    public ResponseEntity<?> deleteAccount(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
+        String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         if (!this.userService.userByUsernameExists(username)) {
             return new ResponseEntity<>(username, HttpStatus.NOT_FOUND);
         }
