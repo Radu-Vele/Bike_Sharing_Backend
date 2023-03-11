@@ -38,7 +38,7 @@ public class StationController {
 
     @PutMapping ("/add-bike")
     @CrossOrigin
-    public ResponseEntity<?> leaveBikeInStation(@RequestBody StationBikePairDTO stationBikePairDTO) {
+    public ResponseEntity<?> addBikeToStation(@RequestBody StationBikePairDTO stationBikePairDTO) {
         boolean status = this.stationService.addBike(stationBikePairDTO.getStationId(), stationBikePairDTO.getBikeId());
 
         if (status)

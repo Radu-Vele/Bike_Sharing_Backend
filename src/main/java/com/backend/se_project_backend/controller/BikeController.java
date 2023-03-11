@@ -30,7 +30,7 @@ public class BikeController {
     @CrossOrigin
     public ResponseEntity<?> deleteBike(@RequestParam String bikeId) {
         this.bikeService.delete(bikeId);
-        return new ResponseEntity<>(HttpStatus.OK); //or whatever this should be
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping ("/calculate-rating")

@@ -67,6 +67,7 @@ public class UserController {
     @CrossOrigin
     public ResponseEntity<?> deleteAccount(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
         String username = jwtUtility.getUsernameFromToken(auth.substring(7));
+
         if (!this.userService.userByUsernameExists(username)) {
             return new ResponseEntity<>(username, HttpStatus.NOT_FOUND);
         }
@@ -76,11 +77,12 @@ public class UserController {
 
     @PutMapping("/edit-account")
     @CrossOrigin
-    public ResponseEntity<?> editAccount(@RequestBody UserEditDTO userEditDTO) {
-        if(!this.userService.userByUsernameExists(userEditDTO.getUsername())) {
+    public ResponseEntity<?> editAccount(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody UserEditDTO userEditDTO) {
+        String username = jwtUtility.getUsernameFromToken(auth.substring(7));
+        if(!this.userService.userByUsernameExists(username)) {
             return new ResponseEntity<>(userEditDTO.getUsername(), HttpStatus.NOT_FOUND);
         }
-        User client = this.userService.edit(userEditDTO);
+        User client = this.userService.edit(username, userEditDTO);
         return new ResponseEntity<User>(client, HttpStatus.CREATED);
     }
 }

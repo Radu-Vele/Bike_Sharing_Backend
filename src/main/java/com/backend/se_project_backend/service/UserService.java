@@ -18,7 +18,7 @@ public interface UserService {
 
     void delete(String username);
 
-    User edit(UserEditDTO userEditDTO);
+    User edit(String username, UserEditDTO userEditDTO);
 
     User editStartRide(Ride ride, String username);
 

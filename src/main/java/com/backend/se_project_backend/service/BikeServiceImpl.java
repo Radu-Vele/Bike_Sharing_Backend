@@ -60,6 +60,8 @@ public class BikeServiceImpl implements BikeService {
                 }
             }
 
+            bikeRepository.save(bikeById.get());
+
             return true;
         }
         else return false;

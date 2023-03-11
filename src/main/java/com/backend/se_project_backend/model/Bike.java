@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 
-@Document
+@Document(collection = "bikes")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

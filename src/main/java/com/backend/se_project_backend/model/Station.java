@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document
+@Document(collection = "stations")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

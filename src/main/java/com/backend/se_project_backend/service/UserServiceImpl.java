@@ -88,9 +88,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User edit(UserEditDTO userEditDTO) {
-        Optional<User> user = this.userRepository.findByUsername(userEditDTO.getUsername());
+    public User edit(String username, UserEditDTO userEditDTO) {
+        Optional<User> user = this.userRepository.findByUsername(username);
         if(user.isPresent()) {
+            user.get().setUsername(userEditDTO.getUsername());
             user.get().setLegalName(userEditDTO.getLegalName());
             user.get().setPhoneNumber(userEditDTO.getPhoneNumber());
             return userRepository.save(user.get());
