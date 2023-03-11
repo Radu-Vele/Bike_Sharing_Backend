@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class BikeRatingDTO {
 
-    private long bikeId;
+    private String bikeId;
+
     private Double currentRating;
 }

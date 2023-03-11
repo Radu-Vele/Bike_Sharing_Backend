@@ -1,13 +1,9 @@
 package com.backend.se_project_backend.repository;
 
 import com.backend.se_project_backend.model.Ride;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Repository
-@Transactional
-public interface RideRepository extends JpaRepository<Ride, Long> {
+public interface RideRepository extends MongoRepository<Ride, String> {
 
 }
 

@@ -2,7 +2,9 @@ package com.backend.se_project_backend.model;
 import com.backend.se_project_backend.utils.UserRoleEnum;
 import com.mongodb.lang.NonNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -19,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "users")
+@Getter
+@Setter
 public class User implements UserDetails {
     @Id
     private String id;
@@ -57,15 +61,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    @NonNull
-    public String getUsername() {
-        return username;
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -81,9 +76,6 @@ public class User implements UserDetails {
         return true;
     }
 
-    /**
-     * TODO: Might help me with email validation
-     */
     @Override
     public boolean isEnabled() {
         return true;
@@ -102,86 +94,7 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    @NonNull
-    public String getPassword() {
-        return password;
-    }
-
-    @NonNull
-    public UserRoleEnum getRole() {
-        return role;
-    }
-
-    public boolean isHasActiveRide() {
-        return hasActiveRide;
-    }
-
-    public Ride getCurrentRide() {
-        return currentRide;
-    }
-
-    public void setUsername(@NonNull String username) {
-        this.username = username;
-    }
-
-    public void setEmail(@NonNull String email) {
-        this.email = email;
-    }
-
-    public void setPassword(@NonNull String password) {
-        this.password = password;
-    }
-
-    public void setRole(@NonNull UserRoleEnum role) {
-        this.role = role;
-    }
-
-    public void setHasActiveRide(boolean hasActiveRide) {
-        this.hasActiveRide = hasActiveRide;
-    }
-
-    public void setCurrentRide(Ride currentRide) {
-        this.currentRide = currentRide;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getLegalName() {
-        return legalName;
-    }
-
-    public void setLegalName(String legalName) {
-        this.legalName = legalName;
-    }
-
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
-    }
-
-    public List<Ride> getRideList() {
-        return rideList;
-    }
-
-    public void setRideList(List<Ride> rideList) {
-        this.rideList = rideList;
-    }
-
     public void addRide(Ride ride) {
         this.rideList.add(ride);
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }
-

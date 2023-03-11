@@ -1,96 +1,39 @@
 package com.backend.se_project_backend.model;
-import lombok.AllArgsConstructor;
 
-import javax.persistence.*;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.Id;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
+@Document
 @AllArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "ride")
-public class Ride extends BaseEntity{
+@NoArgsConstructor
+@Getter
+@Setter
+public class Ride {
 
-    private int bikeId;
-    private int startStationId;
-    private int endStationId;
+    @Id
+    private String id;
+
+    private String bikeId;
+
+    private String startStationId;
+
+    private String endStationId;
+
     private String username;
 
     private LocalDateTime startTime;
+
     private LocalDateTime endTime;
-    private boolean completed;
+
+    private boolean completed = false;
+
     private String recommendation;
-
-    public String getRecommendation() {
-        return recommendation;
-    }
-
-    public void setRecommendation(String recommendation) {
-        this.recommendation = recommendation;
-    }
-
-    public Ride() {
-        this.completed = false;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getBikeId() {
-        return bikeId;
-    }
-
-    public void setBikeId(int bikeId) {
-        this.bikeId = bikeId;
-    }
-
-    public int getStartStationId() {
-        return startStationId;
-    }
-
-    public void setStartStationId(int startStationId) {
-        this.startStationId = startStationId;
-    }
-
-    public int getEndStationId() {
-        return endStationId;
-    }
-
-    public void setEndStationId(int endStationId) {
-        this.endStationId = endStationId;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
 
     public void startTime() {
         this.startTime = LocalDateTime.now();
@@ -100,3 +43,5 @@ public class Ride extends BaseEntity{
         this.endTime = LocalDateTime.now();
     }
 }
+
+

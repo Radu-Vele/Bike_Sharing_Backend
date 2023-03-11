@@ -28,7 +28,7 @@ public class BikeController {
 
     @DeleteMapping("/delete-bike")
     @CrossOrigin
-    public ResponseEntity<?> deleteBike(@RequestParam long bikeId) {
+    public ResponseEntity<?> deleteBike(@RequestParam String bikeId) {
         this.bikeService.delete(bikeId);
         return new ResponseEntity<>(HttpStatus.OK); //or whatever this should be
     }

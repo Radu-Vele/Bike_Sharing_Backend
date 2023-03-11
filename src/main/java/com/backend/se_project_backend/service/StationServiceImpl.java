@@ -2,11 +2,12 @@ package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
-import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.BikeRepository;
 import com.backend.se_project_backend.repository.StationRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,27 +18,18 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class StationServiceImpl implements StationService {
 
     private final StationRepository stationRepository;
     private final BikeRepository bikeRepository;
-    private final ModelMapper modelMapper;
-
-    @Autowired
-    public StationServiceImpl(StationRepository stationRepository, BikeRepository bikeRepository, ModelMapper modelMapper) {
-        this.stationRepository = stationRepository;
-        this.bikeRepository = bikeRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
-    public boolean addBike(long stationId, long bikeId) {
+    public boolean addBike(String stationId, String bikeId) {
         Optional<Station> stationById = this.stationRepository.findById(stationId);
         Optional<Bike> bikeById = this.bikeRepository.findById(bikeId);
-        if (stationById.isPresent() && bikeById.isPresent() && !bikeById.get().isAvailable() && getFreeSlotsByStationId(stationId) != 0) { //verifică dacă bicicleta respectivă e
-                                                                                                                                           // folosită la mom respectiv
-                                                                                                                                           // și dacă mai sunt sloturi libere
-            bikeById.get().setAvailable(true); //after leaving, o face available
+        if (stationById.isPresent() && bikeById.isPresent() && !bikeById.get().isAvailable() && getFreeSlotsByStationId(stationId) != 0) {
+            bikeById.get().setAvailable(true);
             stationById.get().getBikeList().add(bikeById.get());
             return true;
         }
@@ -45,7 +37,7 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public boolean removeBike(long stationId, long bikeId) {
+    public boolean removeBike(String stationId, String bikeId) {
         Optional<Station> stationById = this.stationRepository.findById(stationId);
         Optional<Bike> bikeById = this.bikeRepository.findById(bikeId);
         if (stationById.isPresent() && bikeById.isPresent() && bikeById.get().isAvailable()) { //verifică dacă bița e available
@@ -62,11 +54,11 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public void delete(long stationId) {
+    public void delete(String stationId) {
         Optional<Station> station = this.stationRepository.findById(stationId);
         station.ifPresent(value -> this.stationRepository.deleteById(value.getId()));
     }
-    public String getStationNameById(long stationId) {
+    public String getStationNameById(String stationId) {
         Optional<Station> stationById = this.stationRepository.findById(stationId);
         if (stationById.isPresent()) {
             return stationById.get().getName();
@@ -80,23 +72,23 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public long getFreeSlotsByStationId(long stationId) {
+    public long getFreeSlotsByStationId(String stationId) {
         Optional<Station> stationById = this.stationRepository.findById(stationId);
         if (stationById.isPresent()) {
             List<Bike> listOfBikes = stationById.get().getBikeList();
-            return stationById.get().getMaximumCapacity() - listOfBikes.stream().filter(bike -> bike.isAvailable()).count();
+            return stationById.get().getMaximumCapacity() - listOfBikes.stream().filter(Bike::isAvailable).count();
         }
-        else return -1; //dacă nu există stationId cerut
+        else return -1;
     }
 
     @Override
-    public ArrayList<Bike> getUsableBikesByStationId(long stationId) {
+    public ArrayList<Bike> getUsableBikesByStationId(String stationId) {
         Optional<Station> stationById = this.stationRepository.findById(stationId);
         if (stationById.isPresent()) {
             List<Bike> listOfBikes = stationById.get().getBikeList();
-            return (ArrayList<Bike>) listOfBikes.stream().filter(bike -> bike.isUsable()).collect(Collectors.toList());
+            return (ArrayList<Bike>) listOfBikes.stream().filter(Bike::isUsable).collect(Collectors.toList());
         }
-        else return new ArrayList<>(); //dacă nu există stationId cerut
+        else return new ArrayList<>();
     }
 
     @Override

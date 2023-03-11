@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface BikeService {
 
-    Optional<Bike> bikeById(long bikeId);
+    Optional<Bike> bikeById(String bikeId);
 
     void create(Bike bike);
 
-    void delete(long bikeId);
+    void delete(String bikeId);
 
-    boolean calculateRating(long bikeId, Double currentRating);
+    boolean calculateRating(String bikeId, Double currentRating);
 }

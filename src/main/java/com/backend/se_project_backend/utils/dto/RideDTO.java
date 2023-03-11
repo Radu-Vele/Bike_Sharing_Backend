@@ -11,8 +11,10 @@ import java.time.LocalDateTime;
 public class RideDTO {
 
     private String username;
-    private int startStationId;
-    private int endStationId;
-    private int bikeId;
 
+    private String startStationId;
+
+    private String endStationId;
+
+    private String bikeId;
 }

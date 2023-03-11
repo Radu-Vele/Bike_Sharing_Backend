@@ -30,7 +30,7 @@ public class RideController {
 
     @PutMapping("/end-ride")
     @CrossOrigin
-    public ResponseEntity<?> endRide(@RequestParam long rideId) {
+    public ResponseEntity<?> endRide(@RequestParam String rideId) {
         boolean status = this.rideService.endRide(rideId);
         if (status)
             return new ResponseEntity<>(HttpStatus.CREATED);

@@ -4,9 +4,10 @@ import com.backend.se_project_backend.repository.BikeRepository;
 import com.backend.se_project_backend.service.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@SpringBootApplication
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class SeProjectBackendApplication {
 
     @RequestMapping

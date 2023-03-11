@@ -24,9 +24,13 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
+
     private final ModelMapper modelMapper;
+
     private final AuthenticationManager authenticationManager;
+
     private final JwtUtility jwtUtility;
 
     @Override
@@ -106,6 +110,7 @@ public class UserServiceImpl implements UserService{
         }
         return null;
     }
+
     @Override
     public User editEndRide(Ride ride, String username) {
         Optional<User> user = this.userRepository.findByUsername(username);

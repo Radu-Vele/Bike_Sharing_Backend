@@ -4,6 +4,7 @@ import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.RideRepository;
 import com.backend.se_project_backend.utils.dto.RideDTO;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,24 +14,16 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
 
-    private final ModelMapper modelMapper;
-
     private final StationService stationService;
-    private final UserService userService;
-    private final RecommenderService recommenderService;
 
-    @Autowired
-    public RideServiceImpl(RideRepository rideRepository, ModelMapper modelMapper, StationService stationService, UserService userService, RecommenderService recommenderService) {
-        this.rideRepository = rideRepository;
-        this.modelMapper = modelMapper;
-        this.stationService = stationService;
-        this.userService = userService;
-        this.recommenderService = recommenderService;
-    }
+    private final UserService userService;
+
+    private final RecommenderService recommenderService;
 
     @Override
     public void create(Ride ride) {
@@ -38,7 +31,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void delete(long rideId) {
+    public void delete(String rideId) {
         this.rideRepository.deleteById(rideId);
     }
 
@@ -63,7 +56,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public boolean endRide(long rideId) {
+    public boolean endRide(String rideId) {
         Ride ride = findRideById(rideId);
         ride.setCompleted(true);
         ride.endTime();
@@ -87,7 +80,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Ride findRideById(long rideId) {
+    public Ride findRideById(String rideId) {
         return this.rideRepository.findById(rideId).orElseThrow();
     }
 }

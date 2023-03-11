@@ -25,7 +25,7 @@ public class BikeServiceImpl implements BikeService {
 
 
     @Override
-    public Optional<Bike> bikeById(long bikeId) {
+    public Optional<Bike> bikeById(String bikeId) {
         return this.bikeRepository.findById(bikeId);
     }
 
@@ -35,12 +35,12 @@ public class BikeServiceImpl implements BikeService {
     }
 
     @Override
-    public void delete(long bikeId) {
+    public void delete(String bikeId) {
         this.bikeRepository.deleteById(bikeId);
     }
 
     @Override
-    public boolean calculateRating(long bikeId, Double currentRating) {
+    public boolean calculateRating(String bikeId, Double currentRating) {
         Optional<Bike> bikeById = bikeById(bikeId);
         if (bikeById.isPresent()) {
             Double previousRating = bikeById.get().getRating();

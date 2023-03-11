@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class StationBikePairDTO {
 
-    private long bikeId;
-    private long stationId;
+    private String bikeId;
 
+    private String stationId;
 }

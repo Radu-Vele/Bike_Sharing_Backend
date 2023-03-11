@@ -8,11 +8,11 @@ import java.util.List;
 public interface RideService {
 
     void create(Ride ride);
-    void delete(long rideId);
-    boolean endRide(long rideId);
+    void delete(String rideId);
+    boolean endRide(String rideId);
     boolean startRide(RideDTO ride);
     List<Ride> findRidesByUser(String username);
-    Ride findRideById(long rideId);
+    Ride findRideById(String rideId);
 
 
 }
