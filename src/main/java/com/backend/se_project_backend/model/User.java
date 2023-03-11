@@ -1,6 +1,7 @@
 package com.backend.se_project_backend.model;
 import com.backend.se_project_backend.utils.UserRoleEnum;
 import com.mongodb.lang.NonNull;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "users")
 public class User implements UserDetails {
     @Id
@@ -84,7 +86,7 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @NonNull
@@ -157,7 +159,6 @@ public class User implements UserDetails {
     public void setLegalName(String legalName) {
         this.legalName = legalName;
     }
-
 
     public boolean isLocked() {
         return isLocked;

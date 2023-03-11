@@ -60,12 +60,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public JwtResponse authenticate(JwtRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow();
 
