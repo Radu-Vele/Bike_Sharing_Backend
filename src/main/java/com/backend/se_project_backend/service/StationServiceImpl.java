@@ -31,6 +31,9 @@ public class StationServiceImpl implements StationService {
         if (stationById.isPresent() && bikeById.isPresent() && !bikeById.get().isAvailable() && getFreeSlotsByStationId(stationId) != 0) {
             bikeById.get().setAvailable(true);
             stationById.get().getBikeList().add(bikeById.get());
+
+            stationRepository.save(stationById.get());
+            bikeRepository.save(bikeById.get());
             return true;
         }
         return false;
@@ -40,9 +43,12 @@ public class StationServiceImpl implements StationService {
     public boolean removeBike(String stationId, String bikeId) {
         Optional<Station> stationById = this.stationRepository.findById(stationId);
         Optional<Bike> bikeById = this.bikeRepository.findById(bikeId);
-        if (stationById.isPresent() && bikeById.isPresent() && bikeById.get().isAvailable()) { //verifică dacă bița e available
-            bikeById.get().setAvailable(false); //after pick up, o face unavailable
+        if (stationById.isPresent() && bikeById.isPresent() && bikeById.get().isAvailable()) {
             stationById.get().getBikeList().remove(bikeById.get());
+            bikeById.get().setAvailable(false);
+
+            stationRepository.save(stationById.get());
+            bikeRepository.save(bikeById.get());
             return true;
         }
         return false;

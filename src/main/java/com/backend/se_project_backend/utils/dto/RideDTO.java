@@ -2,10 +2,12 @@ package com.backend.se_project_backend.utils.dto;
 
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+@AllArgsConstructor
 @Getter
 @Setter
 public class RideDTO {
