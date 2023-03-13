@@ -19,7 +19,7 @@ public class Ride {
     @Id
     private String id;
 
-    private String bikeId;
+    private String bikeId; //TODO: Maybe keep track of more human-readable info (i.e. name)
 
     private String startStationId;
 

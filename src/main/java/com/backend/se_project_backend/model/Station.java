@@ -32,7 +32,7 @@ public class Station {
 
     @NonNull
     @Indexed(unique = true)
-    private String name;
+    private String name; // TODO: Consider replacing with NotBlank or validate
 
     private List<Bike> bikeList = new ArrayList<>(); //don't use @DBRef as there's a limited number of bikes in a station
 }

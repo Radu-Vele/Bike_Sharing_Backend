@@ -12,7 +12,10 @@ import javax.transaction.Transactional;
 @Transactional
 public class RecommenderServiceImpl implements RecommenderService{
 
+    private final StationService stationService;
+
     private int size = 12;
+
     private int distance[][] = new int[][] {
             {-1, -1, -1, -1, -1, -1, -1, 2, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, 4},
@@ -43,7 +46,6 @@ public class RecommenderServiceImpl implements RecommenderService{
 
     private int timeMatrix[][] = new int[size][size];
 
-    private final StationService stationService;
 
     @Autowired
     public RecommenderServiceImpl(StationService stationService) {

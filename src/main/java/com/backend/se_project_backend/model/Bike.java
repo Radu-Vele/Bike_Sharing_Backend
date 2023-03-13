@@ -18,6 +18,8 @@ public class Bike {
     @Id
     private String id;
 
+    // TODO: Add a human-readable identifier (e.g. indexed counter)
+
     private boolean available;
 
     private boolean usable;
