@@ -1,4 +1,4 @@
-package com.backend.se_project_backend.utils.dto;
+package com.backend.se_project_backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

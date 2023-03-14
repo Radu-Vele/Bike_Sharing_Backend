@@ -1,4 +1,4 @@
-package com.backend.se_project_backend.utils.dto;
+package com.backend.se_project_backend.dto;
 
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;

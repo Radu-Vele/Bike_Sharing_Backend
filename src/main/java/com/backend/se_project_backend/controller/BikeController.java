@@ -2,8 +2,8 @@ package com.backend.se_project_backend.controller;
 
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.service.BikeService;
-import com.backend.se_project_backend.utils.dto.BikeDTO;
-import com.backend.se_project_backend.utils.dto.BikeRatingDTO;
+import com.backend.se_project_backend.dto.BikeDTO;
+import com.backend.se_project_backend.dto.BikeRatingDTO;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;

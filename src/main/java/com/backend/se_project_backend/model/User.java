@@ -15,6 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,15 +30,12 @@ public class User implements UserDetails {
     @Id
     private String id;
 
-    @NonNull
     @Indexed(unique = true)
-    private String username; //unique username
+    private String username;
 
-    @NonNull
     @Indexed(unique = true)
     private String email;
 
-    @NonNull
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -55,7 +55,7 @@ public class User implements UserDetails {
 
     private boolean isLocked = false; //can lock the account
 
-    public User(@NonNull String username, @NonNull String email, @NonNull String password) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;

@@ -3,10 +3,8 @@ package com.backend.se_project_backend.service;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.RideRepository;
-import com.backend.se_project_backend.utils.dto.RideDTO;
+import com.backend.se_project_backend.dto.RideDTO;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

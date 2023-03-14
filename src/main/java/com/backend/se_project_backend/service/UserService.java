@@ -4,8 +4,8 @@ import com.backend.se_project_backend.config.jwt.JwtRequest;
 import com.backend.se_project_backend.config.jwt.JwtResponse;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
-import com.backend.se_project_backend.utils.dto.UserDTO;
-import com.backend.se_project_backend.utils.dto.UserEditDTO;
+import com.backend.se_project_backend.dto.UserDTO;
+import com.backend.se_project_backend.dto.UserEditDTO;
 
 public interface UserService {
     User findUserByUsername(String username);

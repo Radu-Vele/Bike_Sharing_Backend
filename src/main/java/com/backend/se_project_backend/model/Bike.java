@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
@@ -18,13 +21,17 @@ public class Bike {
     @Id
     private String id;
 
-    // TODO: Add a human-readable identifier (e.g. indexed counter)
+    @Indexed(unique = true)
+    private long externalId;
 
     private boolean available;
 
     private boolean usable;
 
     private Double rating;
+
+    @Transient
+    public static final String SEQUENCE_NAME = "bike_sequence";
 
     @Override
     public boolean equals(Object o) {

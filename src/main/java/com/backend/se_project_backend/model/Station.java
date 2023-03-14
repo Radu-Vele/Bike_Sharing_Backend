@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,6 +19,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@CompoundIndexes(value = {
+        @CompoundIndex(name = "coordinates", def = "{'xCoordinate' : 1, 'yCoordinate' : 1}", unique = true)}) //TODO: Check if it works
 public class Station {
     @Id
     private String id;

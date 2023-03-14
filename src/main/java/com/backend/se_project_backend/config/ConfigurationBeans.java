@@ -1,10 +1,16 @@
 package com.backend.se_project_backend.config;
 
 import com.backend.se_project_backend.repository.UserRepository;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;

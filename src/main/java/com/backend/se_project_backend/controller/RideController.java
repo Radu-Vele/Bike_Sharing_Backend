@@ -2,7 +2,7 @@ package com.backend.se_project_backend.controller;
 
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.service.RideService;
-import com.backend.se_project_backend.utils.dto.RideDTO;
+import com.backend.se_project_backend.dto.RideDTO;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;

@@ -3,15 +3,14 @@ package com.backend.se_project_backend.controller;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.service.StationService;
-import com.backend.se_project_backend.utils.dto.StationBikePairDTO;
-import com.backend.se_project_backend.utils.dto.StationDTO;
+import com.backend.se_project_backend.dto.StationBikePairDTO;
+import com.backend.se_project_backend.dto.StationDTO;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 @RestController

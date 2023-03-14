@@ -1,7 +1,7 @@
 package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.model.Ride;
-import com.backend.se_project_backend.utils.dto.RideDTO;
+import com.backend.se_project_backend.dto.RideDTO;
 
 import java.util.List;
 
