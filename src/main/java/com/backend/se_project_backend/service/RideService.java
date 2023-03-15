@@ -11,7 +11,7 @@ public interface RideService {
     void delete(String rideId);
     boolean endRide(String rideId);
     boolean startRide(RideDTO ride);
-    List<Ride> findRidesByUser(String username);
+    List<Ride> findRidesByUser(String username) throws Exception;
     Ride findRideById(String rideId);
 
 

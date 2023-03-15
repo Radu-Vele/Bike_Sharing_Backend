@@ -1,5 +1,6 @@
 server.port=8081
 #configuration
 spring.data.mongodb.uri=mongodb+srv://admin:<password>@cluster0.ozohemj.mongodb.net/<database_name>?retryWrites=true&w=majority
+spring.data.mongodb.auto-index-creation=true
 
 jwt.secret=securesecurekeygeneratedbymehehe

@@ -39,7 +39,7 @@ public class RideController {
 
     @GetMapping("/ride-list")
     @CrossOrigin
-    public List<Ride> showRidesByUser(@RequestParam String username) {
+    public List<Ride> showRidesByUser(@RequestParam String username) throws Exception {
         return this.rideService.findRidesByUser(username);
     }
 }

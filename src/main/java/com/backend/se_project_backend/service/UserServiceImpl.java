@@ -3,15 +3,21 @@ package com.backend.se_project_backend.service;
 import com.backend.se_project_backend.config.jwt.JwtRequest;
 import com.backend.se_project_backend.config.jwt.JwtResponse;
 import com.backend.se_project_backend.config.jwt.JwtUtility;
+import com.backend.se_project_backend.dto.UserCreatedDTO;
+import com.backend.se_project_backend.dto.UserDetailsDTO;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.UserRepository;
 import com.backend.se_project_backend.dto.UserDTO;
 import com.backend.se_project_backend.dto.UserEditDTO;
+import com.backend.se_project_backend.utils.exceptions.UserAlreadyRegisteredException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +40,12 @@ public class UserServiceImpl implements UserService{
     private final JwtUtility jwtUtility;
 
     @Override
-    public User findUserByUsername(String username) {
+    public User findUserByUsername(String username) throws Exception{
         Optional<User> byUsername = this.userRepository.findByUsername(username);
         if (byUsername.isPresent()) {
             return byUsername.get();
         } else {
-            throw new IllegalStateException("Can not find user with this username");
+            throw new UsernameNotFoundException("Can not find user with this username");
         }
     }
 
@@ -56,10 +62,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User register(UserDTO user) {
+    public String roleByUsername(String username) throws Exception{
+        User userByUsername = this.findUserByUsername(username);
+        return userByUsername.getRole().toString();
+    }
+
+    @Override
+    public UserCreatedDTO register(UserDTO user) throws UserAlreadyRegisteredException {
+        if (this.userByUsernameExists(user.getUsername()) || this.userByEmailExists(user.getEmail())) {
+            throw new UserAlreadyRegisteredException("Username or email address already in use.");
+        }
+
         User newUser = this.modelMapper.map(user, User.class);
         newUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(newUser);
+        return this.modelMapper.map(this.userRepository.save(newUser), UserCreatedDTO.class);
     }
 
     @Override
@@ -84,19 +100,31 @@ public class UserServiceImpl implements UserService{
     @Override
     public void delete(String username) {
         Optional<User> user = this.userRepository.findByUsername(username);
-        user.ifPresent(value -> this.userRepository.deleteById(value.getId()));
+        if(user.isEmpty()) {
+            throw new UsernameNotFoundException("Username not found");
+        }
+         this.userRepository.deleteById(user.get().getId());
     }
 
     @Override
-    public User edit(String username, UserEditDTO userEditDTO) {
+    public UserDetailsDTO edit(String username, UserEditDTO userEditDTO) throws UserAlreadyRegisteredException {
         Optional<User> user = this.userRepository.findByUsername(username);
         if(user.isPresent()) {
+            if(this.userByUsernameExists(user.get().getUsername())) {
+                throw new UserAlreadyRegisteredException();
+            }
+            if(this.userByEmailExists(user.get().getEmail())) {
+                throw new UserAlreadyRegisteredException();
+            }
+
             user.get().setUsername(userEditDTO.getUsername());
             user.get().setLegalName(userEditDTO.getLegalName());
             user.get().setPhoneNumber(userEditDTO.getPhoneNumber());
-            return userRepository.save(user.get());
+            return this.modelMapper.map(userRepository.save(user.get()), UserDetailsDTO.class);
         }
-        return null;
+        else{
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 
     @Override
@@ -122,5 +150,11 @@ public class UserServiceImpl implements UserService{
             }
         }
         return null;
+    }
+
+    @Override
+    public UserDetailsDTO getUserDetails(String username) throws Exception{
+        User user = this.findUserByUsername(username);
+        return this.modelMapper.map(user, UserDetailsDTO.class);
     }
 }

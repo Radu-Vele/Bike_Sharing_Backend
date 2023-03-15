@@ -9,13 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserEditDTO {
-
+public class UserCreatedDTO {
     private String username;
 
-    private String legalName;
-
-    //TODO: Add Email editing
-
-    private String phoneNumber;
+    private String email;
 }

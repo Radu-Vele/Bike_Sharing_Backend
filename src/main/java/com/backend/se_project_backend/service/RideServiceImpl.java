@@ -69,7 +69,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public List<Ride> findRidesByUser(String username) {
+    public List<Ride> findRidesByUser(String username) throws Exception {
         if (userService.userByUsernameExists(username)) {
             User user = userService.findUserByUsername(username);
             return user.getRideList();
