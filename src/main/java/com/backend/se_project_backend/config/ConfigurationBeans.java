@@ -1,6 +1,7 @@
 package com.backend.se_project_backend.config;
 
 import com.backend.se_project_backend.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,9 @@ public class ConfigurationBeans {
     public ModelMapper createModelMapper() {
         return new ModelMapper();
     }
+
+    @Bean
+    public ObjectMapper createObjectMapper() { return new ObjectMapper(); }
 
     private final UserRepository userRepository;
 
