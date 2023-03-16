@@ -3,4 +3,9 @@ server.port=8081
 spring.data.mongodb.uri=mongodb+srv://admin:<password>@cluster0.ozohemj.mongodb.net/<database_name>?retryWrites=true&w=majority
 spring.data.mongodb.auto-index-creation=true
 
+# Local instance
+# spring.data.mongodb.host=localhost
+# spring.data.mongodb.port=27017
+# spring.data.mongodb.database=bike_sharing
+
 jwt.secret=securesecurekeygeneratedbymehehe

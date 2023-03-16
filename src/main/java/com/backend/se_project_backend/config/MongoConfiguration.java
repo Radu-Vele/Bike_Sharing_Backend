@@ -13,11 +13,23 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration{
     private String uri;
 
     @Value("${spring.data.mongodb.database}")
-    private String databaseName;
+    private String database;
+
+    // Local connection configuration:
+    //    @Value("${spring.data.mongodb.host}")
+    //    private String host;
+    //
+    //    @Value("${spring.data.mongodb.port}")
+    //    private int port;
+    //
+    //    @Bean
+    //    public MongoClient mongoClient() {
+    //        return new MongoClient(host, port);
+    //    }
 
     @Override
     protected String getDatabaseName() {
-        return databaseName;
+        return database;
     }
 
     @Override
@@ -30,7 +42,7 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration{
      * @return
      */
     public MongoTemplate mongoTemplate() {
-            return new MongoTemplate(mongoClient(), databaseName);
+            return new MongoTemplate(mongoClient(), database);
     }
 
     /**
