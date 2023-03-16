@@ -2,12 +2,10 @@ package com.backend.se_project_backend.controller;
 
 import com.backend.se_project_backend.dto.UserCreatedDTO;
 import com.backend.se_project_backend.dto.UserDetailsDTO;
-import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.config.jwt.JwtRequest;
 import com.backend.se_project_backend.config.jwt.JwtResponse;
 import com.backend.se_project_backend.config.jwt.JwtUtility;
 import com.backend.se_project_backend.service.UserService;
-import com.backend.se_project_backend.utils.UserRoleEnum;
 import com.backend.se_project_backend.dto.UserDTO;
 import com.backend.se_project_backend.dto.UserEditDTO;
 import com.backend.se_project_backend.utils.exceptions.UserAlreadyRegisteredException;

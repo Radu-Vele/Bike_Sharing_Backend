@@ -33,8 +33,8 @@ public class BikeController {
 
     @PutMapping ("/calculate-rating")
     @CrossOrigin
-    public ResponseEntity<?> updateBikeRating(@Valid @RequestBody BikeRatingDTO bikeRatingDTO) {
-        boolean status = this.bikeService.calculateRating(bikeRatingDTO.getExternalId(), bikeRatingDTO.getGivenRating());
-        return new ResponseEntity<>(HttpStatus.OK); //TODO: catch not found error
+    public ResponseEntity<?> updateBikeRating(@Valid @RequestBody BikeRatingDTO bikeRatingDTO) throws Exception {
+        this.bikeService.calculateRating(bikeRatingDTO.getExternalId(), bikeRatingDTO.getGivenRating());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

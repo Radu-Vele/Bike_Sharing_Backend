@@ -4,6 +4,7 @@ import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeRatingDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.repository.BikeRepository;
+import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,7 @@ public class BikeServiceImpl implements BikeService {
     private final ModelMapper modelMapper;
     private final SequenceGeneratorService sequenceGeneratorService;
 
-            @Override
-            public Optional<Bike> bikeByExternalId(long externalId) {
+    @Override public Optional<Bike> bikeByExternalId(long externalId) {
         return this.bikeRepository.findByExternalId(externalId);
     }
 
@@ -39,7 +39,7 @@ public class BikeServiceImpl implements BikeService {
     }
 
     @Override
-    public boolean calculateRating(long externalId, Double currentRating) {
+    public void calculateRating(long externalId, Double currentRating) throws DocumentNotFoundException {
         Optional<Bike> bikeById = bikeByExternalId(externalId);
         if (bikeById.isPresent()) {
             Double previousRating = bikeById.get().getRating();
@@ -60,9 +60,9 @@ public class BikeServiceImpl implements BikeService {
             }
 
             bikeRepository.save(bikeById.get());
-
-            return true;
         }
-        else return false;
+        else {
+            throw new DocumentNotFoundException("There is no bike with the given external ID in the database.");
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.backend.se_project_backend.dto;
 
-import com.backend.se_project_backend.utils.UserRoleEnum;
+import com.backend.se_project_backend.utils.enums.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
