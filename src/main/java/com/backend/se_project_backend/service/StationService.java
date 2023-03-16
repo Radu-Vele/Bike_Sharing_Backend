@@ -1,6 +1,8 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.BikeGetDTO;
 import com.backend.se_project_backend.dto.StationDTO;
+import com.backend.se_project_backend.dto.StationGetDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
@@ -18,16 +20,13 @@ public interface StationService {
 
     void delete(String stationName) throws DocumentNotFoundException;
 
-    String getStationNameById(String stationId);
+    ArrayList<StationGetDTO> getStations();
 
-    ArrayList<Station> getStations();
+    long getFreeSlotsByStationName(String stationName) throws DocumentNotFoundException;
 
-    long getFreeSlotsByStationId(String stationId);
+    ArrayList<BikeGetDTO> getUsableBikesByStationName(String stationName) throws DocumentNotFoundException;
 
-    ArrayList<Bike> getUsableBikesByStationId(String stationId);
+    ArrayList<Station> getUsableStartStations() throws DocumentNotFoundException;
 
-    ArrayList<Station> getUsableStartStations();
-
-    ArrayList<Station> getFreeEndStations();
-
+    ArrayList<Station> getFreeEndStations() throws Exception;
 }

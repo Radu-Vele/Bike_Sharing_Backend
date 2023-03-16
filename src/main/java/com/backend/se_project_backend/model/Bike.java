@@ -23,9 +23,9 @@ public class Bike {
 
     private long externalId;
 
-    private boolean available;
+    private boolean available; //refers to bike availability (currently in use)
 
-    private boolean usable;
+    private boolean usable; //refers to bike condition (broken)
 
     private Double rating;
 

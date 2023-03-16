@@ -1,6 +1,8 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.BikeGetDTO;
 import com.backend.se_project_backend.dto.StationDTO;
+import com.backend.se_project_backend.dto.StationGetDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.repository.BikeRepository;
@@ -48,7 +50,7 @@ public class StationServiceImpl implements StationService {
 
         validateStationBikePairWithDB( stationByName, bikeByExternalId);
 
-        if(getFreeSlotsByStationId(stationByName.get().getId()) == 0) {
+        if(getFreeSlotsByStationName(stationByName.get().getName()) == 0) {
             throw new IllegalOperationException("Cannot add a bike to a full station");
         }
         if (bikeByExternalId.get().isAvailable()) {
@@ -108,45 +110,69 @@ public class StationServiceImpl implements StationService {
         }
     }
 
-    public String getStationNameById(String stationId) {
-        Optional<Station> stationById = this.stationRepository.findById(stationId);
-        if (stationById.isPresent()) {
-            return stationById.get().getName();
+    private ArrayList<StationGetDTO> mapStationsToDTO(List<Station> stations) {
+        ArrayList<StationGetDTO> stationDTOs = new ArrayList<>();
+
+        for (Station station: stations) {
+            StationGetDTO stationGetDTO = new StationGetDTO();
+            this.modelMapper.map(station, stationGetDTO);
+
+            ArrayList<BikeGetDTO> bikeGetDTOs = new ArrayList<>();
+            for (Bike bike : station.getBikeList()) {
+                BikeGetDTO bikeGetDTO = this.modelMapper.map(bike, BikeGetDTO.class);
+                bikeGetDTOs.add(bikeGetDTO);
+            }
+            stationGetDTO.setBikeList(bikeGetDTOs);
+
+            stationDTOs.add(stationGetDTO);
         }
-        else return "";
+
+        return stationDTOs;
     }
 
     @Override
-    public ArrayList<Station> getStations() {
-        return (ArrayList<Station>) this.stationRepository.findAll();
+    public ArrayList<StationGetDTO> getStations() {
+        List<Station> allStations = this.stationRepository.findAll();
+        return mapStationsToDTO(allStations);
     }
 
     @Override
-    public long getFreeSlotsByStationId(String stationId) {
-        Optional<Station> stationById = this.stationRepository.findById(stationId);
-        if (stationById.isPresent()) {
-            List<Bike> listOfBikes = stationById.get().getBikeList();
-            return stationById.get().getMaximumCapacity() - listOfBikes.stream().filter(Bike::isAvailable).count();
+    public long getFreeSlotsByStationName(String stationName) throws DocumentNotFoundException {
+        Optional<Station> stationByName = this.stationRepository.findByName(stationName);
+        if (stationByName.isPresent()) {
+            List<Bike> listOfBikes = stationByName.get().getBikeList();
+            return stationByName.get().getMaximumCapacity() - listOfBikes.size();
         }
-        else return -1;
-    }
-
-    @Override
-    public ArrayList<Bike> getUsableBikesByStationId(String stationId) {
-        Optional<Station> stationById = this.stationRepository.findById(stationId);
-        if (stationById.isPresent()) {
-            List<Bike> listOfBikes = stationById.get().getBikeList();
-            return (ArrayList<Bike>) listOfBikes.stream().filter(Bike::isUsable).collect(Collectors.toList());
+        else {
+            throw new DocumentNotFoundException("There is no station having the given name in the database.");
         }
-        else return new ArrayList<>();
     }
 
     @Override
-    public ArrayList<Station> getUsableStartStations() {
-        ArrayList<Station> listOfStations = getStations();
+    public ArrayList<BikeGetDTO> getUsableBikesByStationName(String stationName) throws DocumentNotFoundException {
+        Optional<Station> stationByName = this.stationRepository.findByName(stationName);
+
+        if (stationByName.isEmpty()) {
+            throw new DocumentNotFoundException("There is no station having the given name in the database.");
+        }
+
+        List<Bike> bikesFromStation = stationByName.get().getBikeList();
+        ArrayList<BikeGetDTO> bikeGetDTOs = new ArrayList<>();
+        for (Bike bike:
+             bikesFromStation) {
+            if(bike.isUsable()) {
+                bikeGetDTOs.add(this.modelMapper.map(bike, BikeGetDTO.class));
+            }
+        }
+        return bikeGetDTOs;
+    }
+
+    @Override
+    public ArrayList<Station> getUsableStartStations() throws DocumentNotFoundException {
+        ArrayList<Station> listOfStations = (ArrayList<Station>) this.stationRepository.findAll();
         ArrayList<Station> toBeRemoved = new ArrayList<>();
         for (Station station : listOfStations) {
-            if(getUsableBikesByStationId(station.getId()).isEmpty()) {
+            if(getUsableBikesByStationName(station.getName()).isEmpty()) {
                 toBeRemoved.add(station);
             }
         }
@@ -161,11 +187,11 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public ArrayList<Station> getFreeEndStations() {
-        ArrayList<Station> listOfStations = getStations();
+    public ArrayList<Station> getFreeEndStations() throws Exception{
+        ArrayList<Station> listOfStations = (ArrayList<Station>) this.stationRepository.findAll();
         ArrayList<Station> toBeRemoved = new ArrayList<>();
         for (Station station : listOfStations) {
-            if(getFreeSlotsByStationId(station.getId()) == 0) {
+            if(getFreeSlotsByStationName(station.getName()) == 0) {
                 toBeRemoved.add(station);
             }
         }

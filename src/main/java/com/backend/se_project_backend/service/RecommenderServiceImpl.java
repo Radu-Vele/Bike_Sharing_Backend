@@ -117,7 +117,7 @@ public class RecommenderServiceImpl implements RecommenderService{
     }
 
     private String getStationName(String endId) {
-        String stationName = stationService.getStationNameById(endId);
+        //String stationName = stationService.getStationNameById(endId);
 //        if(stationName.equals("")) {
 //            switch (endId) {
 //                case 1:

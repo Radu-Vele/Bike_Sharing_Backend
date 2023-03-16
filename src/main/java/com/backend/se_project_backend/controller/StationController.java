@@ -1,10 +1,13 @@
 package com.backend.se_project_backend.controller;
 
+import com.backend.se_project_backend.dto.BikeGetDTO;
+import com.backend.se_project_backend.dto.StationGetDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.service.StationService;
 import com.backend.se_project_backend.dto.StationBikePairDTO;
 import com.backend.se_project_backend.dto.StationDTO;
+import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,34 +46,34 @@ public class StationController {
 
     @PutMapping ("/remove-bike")
     @CrossOrigin
-    public ResponseEntity<?> pickUpBikeFromStation(@RequestBody StationBikePairDTO stationBikePairDTO) throws Exception {
+    public ResponseEntity<?> pickUpBikeFromStation(@Valid @RequestBody StationBikePairDTO stationBikePairDTO) throws Exception {
         this.stationService.removeBike(stationBikePairDTO.getStationName(), stationBikePairDTO.getBikeExternalId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping ("/get-stations")
     @CrossOrigin
-    public ArrayList<Station> getListOfStations() {
+    public ArrayList<StationGetDTO> getListOfStations() {
         return this.stationService.getStations();
     }
 
     @GetMapping ("/get-free-slots")
     @CrossOrigin
-    public long getFreeSlots(@RequestParam String stationId) {
-        return this.stationService.getFreeSlotsByStationId(stationId);
+    public long getFreeSlots(@RequestParam String stationName) throws DocumentNotFoundException {
+        return this.stationService.getFreeSlotsByStationName(stationName);
     }
 
     @GetMapping ("/get-usable-bikes")
     @CrossOrigin
-    public ArrayList<Bike> getUsableBikes(@RequestParam String stationId) {
-        return this.stationService.getUsableBikesByStationId(stationId);
+    public ArrayList<BikeGetDTO> getUsableBikes(@RequestParam String stationName) throws DocumentNotFoundException {
+        return this.stationService.getUsableBikesByStationName(stationName);
     }
 
-    @GetMapping ("/get-usable-stations")
+    @GetMapping ("/get-start-stations")
     @CrossOrigin
-    public ArrayList<Station> getListOfUsableStations() { return this.stationService.getUsableStartStations(); }
+    public ArrayList<Station> getListOfUsableStations() throws DocumentNotFoundException { return this.stationService.getUsableStartStations(); }
 
-    @GetMapping ("/get-free-stations")
+    @GetMapping ("/get-end-stations")
     @CrossOrigin
-    public ArrayList<Station> getListOfFreeStations() { return this.stationService.getFreeEndStations(); }
+    public ArrayList<Station> getListOfFreeStations() throws Exception { return this.stationService.getFreeEndStations(); }
 }
