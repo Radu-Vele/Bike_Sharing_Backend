@@ -29,6 +29,7 @@ public class BikeServiceImpl implements BikeService {
     public long create(BikeDTO bikeDTO) {
         Bike bike = this.modelMapper.map(bikeDTO, Bike.class);
         bike.setExternalId(sequenceGeneratorService.generateSequence(Bike.SEQUENCE_NAME));
+        //TODO: check uniqueness of the external ID.
         return this.bikeRepository.save(bike).getExternalId();
     }
 

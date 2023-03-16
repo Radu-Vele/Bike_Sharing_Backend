@@ -44,12 +44,12 @@ public class RideServiceImpl implements RideService {
         String path = recommenderService.dijkstra(newRide.getStartStationId(), newRide.getEndStationId());
         newRide.setRecommendation(path);
 
-        if (stationService.removeBike(newRide.getStartStationId(), newRide.getBikeId())) {
-            rideRepository.save(newRide);
-            userService.editStartRide(newRide, ride.getUsername());
-            System.out.println(path);
-            return true;
-        }
+//        if (stationService.removeBike(newRide.getStartStationId(), newRide.getBikeId())) {
+//            rideRepository.save(newRide);
+//            userService.editStartRide(newRide, ride.getUsername());
+//            System.out.println(path);
+//            return true;
+//        }
         return false;
     }
 
@@ -59,11 +59,11 @@ public class RideServiceImpl implements RideService {
         ride.setCompleted(true);
         ride.endTime();
 
-        if (stationService.addBike(ride.getEndStationId(), ride.getBikeId())) {
+/*        if (stationService.addBike(ride.getEndStationId(), ride.getBikeId())) {
             rideRepository.save(ride);
             userService.editEndRide(ride, ride.getUsername());
             return true;
-        }
+        }*/
 
         return false;
     }

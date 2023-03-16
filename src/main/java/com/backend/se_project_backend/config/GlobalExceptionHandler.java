@@ -1,8 +1,11 @@
 package com.backend.se_project_backend.config;
 
+import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
+import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
 import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
 import com.backend.se_project_backend.utils.exceptions.UserAlreadyRegisteredException;
 import com.mongodb.MongoWriteException;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +43,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUsernameNotFoundException ( //TODO: Why is this not caught?
+    public ResponseEntity<Object> handleUsernameNotFoundException ( //TODO: (?) Why is this not caught?
             UsernameNotFoundException ex, WebRequest request) {
         String bodyOfResponse = "There is no user associated with the given token";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -67,7 +70,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUniqueDBFieldException (
             UniqueDBFieldException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
+    @ExceptionHandler(DocumentNotFoundException.class)
+    public ResponseEntity<Object> handleDocumentNotFoundException (
+            DocumentNotFoundException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<Object> handleDocumentNotFoundException (
+            IllegalOperationException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(io.jsonwebtoken.SignatureException.class)
+    public ResponseEntity<Object> handleDocumentNotFoundException ( //TODO: (?) How to catch these kind of internal exceptions (or JWT-related).
+            SignatureException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
 }

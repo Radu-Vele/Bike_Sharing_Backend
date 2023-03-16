@@ -6,7 +6,6 @@ import com.backend.se_project_backend.service.StationService;
 import com.backend.se_project_backend.dto.StationBikePairDTO;
 import com.backend.se_project_backend.dto.StationDTO;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,28 +29,23 @@ public class StationController {
 
     @DeleteMapping ("/delete-station")
     @CrossOrigin
-    public ResponseEntity<?> deleteStation(@RequestParam String stationId) {
-        this.stationService.delete(stationId);
+    public ResponseEntity<?> deleteStation(@RequestParam String stationName) throws Exception{
+        this.stationService.delete(stationName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping ("/add-bike")
     @CrossOrigin
-    public ResponseEntity<?> addBikeToStation(@RequestBody StationBikePairDTO stationBikePairDTO) {
-        boolean status = this.stationService.addBike(stationBikePairDTO.getStationId(), stationBikePairDTO.getBikeId());
-
-        if (status)
-            return new ResponseEntity<>(HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> addBikeToStation(@Valid @RequestBody StationBikePairDTO stationBikePairDTO) throws Exception{
+        this.stationService.addBike(stationBikePairDTO.getStationName(), stationBikePairDTO.getBikeExternalId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping ("/remove-bike")
     @CrossOrigin
-    public ResponseEntity<?> pickUpBikeFromStation(@RequestBody StationBikePairDTO stationBikePairDTO) {
-        boolean status = this.stationService.removeBike(stationBikePairDTO.getStationId(), stationBikePairDTO.getBikeId());
-        if (status)
-            return new ResponseEntity<>(HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> pickUpBikeFromStation(@RequestBody StationBikePairDTO stationBikePairDTO) throws Exception {
+        this.stationService.removeBike(stationBikePairDTO.getStationName(), stationBikePairDTO.getBikeExternalId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping ("/get-stations")
