@@ -1,9 +1,12 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.StationDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.repository.BikeRepository;
 import com.backend.se_project_backend.repository.StationRepository;
+import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
+import com.mongodb.MongoWriteException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ public class StationServiceImpl implements StationService {
 
     private final StationRepository stationRepository;
     private final BikeRepository bikeRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public boolean addBike(String stationId, String bikeId) {
@@ -55,7 +59,11 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public void create(Station station) {
+    public void create(StationDTO stationDTO) throws UniqueDBFieldException {
+        Station station = this.modelMapper.map(stationDTO, Station.class);
+        if(!this.stationRepository.findByName(stationDTO.getName()).isEmpty()) {
+            throw new UniqueDBFieldException("There already exists a station having that name");
+        }
         this.stationRepository.save(station);
     }
 

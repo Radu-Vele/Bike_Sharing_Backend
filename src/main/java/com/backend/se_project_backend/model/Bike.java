@@ -21,7 +21,6 @@ public class Bike {
     @Id
     private String id;
 
-    @Indexed(unique = true)
     private long externalId;
 
     private boolean available;

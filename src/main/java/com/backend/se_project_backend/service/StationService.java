@@ -1,7 +1,9 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.StationDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
+import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
 
 import java.util.ArrayList;
 
@@ -11,7 +13,7 @@ public interface StationService {
 
     boolean removeBike(String stationId, String bikeId);
 
-    void create(Station station);
+    void create(StationDTO stationDTO) throws UniqueDBFieldException;
 
     void delete(String stationId);
 

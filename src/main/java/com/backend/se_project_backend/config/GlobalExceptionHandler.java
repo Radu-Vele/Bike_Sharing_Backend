@@ -1,6 +1,8 @@
 package com.backend.se_project_backend.config;
 
+import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
 import com.backend.se_project_backend.utils.exceptions.UserAlreadyRegisteredException;
+import com.mongodb.MongoWriteException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,16 +40,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUsernameNotFoundException( //TODO: Why is this not caught?
+    public ResponseEntity<Object> handleUsernameNotFoundException ( //TODO: Why is this not caught?
             UsernameNotFoundException ex, WebRequest request) {
         String bodyOfResponse = "There is no user associated with the given token";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(UserAlreadyRegisteredException.class)
-    public ResponseEntity<Object> handleUserAlreadyRegisteredException(
+    public ResponseEntity<Object> handleUserAlreadyRegisteredException (
                                                                    UserAlreadyRegisteredException ex, WebRequest request) {
         String bodyOfResponse = "Username or email address already in use.";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
+
+    @ExceptionHandler(MongoWriteException.class)
+    public ResponseEntity<Object> handleMongoWriteException (
+            MongoWriteException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    /**
+     * caught when one tries to insert data that needs to be unique and is already present
+     */
+    @ExceptionHandler(UniqueDBFieldException.class)
+    public ResponseEntity<Object> handleUniqueDBFieldException (
+            UniqueDBFieldException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
 }

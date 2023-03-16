@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 
 @RestController
@@ -19,13 +20,11 @@ import java.util.ArrayList;
 public class StationController {
 
     private final StationService stationService;
-    private final ModelMapper modelMapper;
 
     @PostMapping ("/create-station")
     @CrossOrigin
-    public ResponseEntity<?> createStation(@RequestBody StationDTO stationDTO) {
-        Station station = this.modelMapper.map(stationDTO, Station.class);
-        this.stationService.create(station);
+    public ResponseEntity<?> createStation(@Valid @RequestBody StationDTO stationDTO) throws Exception{
+        this.stationService.create(stationDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -19,24 +19,18 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@CompoundIndexes(value = {
-        @CompoundIndex(name = "coordinates", def = "{'xCoordinate' : 1, 'yCoordinate' : 1}", unique = true)}) //TODO: Check if it works
 public class Station {
     @Id
     private String id;
 
-    @NonNull
-    private Double xCoordinate;
+    private Double latitude;
 
-    @NonNull
-    private Double yCoordinate;
+    private Double longitude;
 
-    @NonNull
     private long maximumCapacity;
 
-    @NonNull
     @Indexed(unique = true)
-    private String name; // TODO: Consider replacing with NotBlank or validate
+    private String name;
 
     private List<Bike> bikeList = new ArrayList<>(); //don't use @DBRef as there's a limited number of bikes in a station
 }

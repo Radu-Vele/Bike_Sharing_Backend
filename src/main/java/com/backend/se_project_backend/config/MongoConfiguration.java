@@ -31,5 +31,13 @@ public class MongoConfiguration extends AbstractMongoClientConfiguration{
      */
     public MongoTemplate mongoTemplate() {
             return new MongoTemplate(mongoClient(), databaseName);
-        }
+    }
+
+    /**
+     * used to allow indexed fields in mongodb collection
+     */
+    @Override
+    protected boolean autoIndexCreation() {
+        return true;
+    }
 }
