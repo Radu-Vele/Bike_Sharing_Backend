@@ -71,9 +71,9 @@ public class StationController {
 
     @GetMapping ("/get-start-stations")
     @CrossOrigin
-    public ArrayList<Station> getListOfUsableStations() throws DocumentNotFoundException { return this.stationService.getUsableStartStations(); }
+    public ArrayList<StationGetDTO> getListOfUsableStations() throws Exception { return this.stationService.getUsableStartStations(); }
 
     @GetMapping ("/get-end-stations")
     @CrossOrigin
-    public ArrayList<Station> getListOfFreeStations() throws Exception { return this.stationService.getFreeEndStations(); }
+    public ArrayList<StationGetDTO> getListOfFreeStations() throws Exception { return this.stationService.getFreeEndStations(); }
 }

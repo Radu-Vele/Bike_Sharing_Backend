@@ -10,7 +10,6 @@ import com.backend.se_project_backend.repository.StationRepository;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
 import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
-import com.mongodb.MongoWriteException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,40 +167,32 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public ArrayList<Station> getUsableStartStations() throws DocumentNotFoundException {
+    public ArrayList<StationGetDTO> getUsableStartStations() throws DocumentNotFoundException {
         ArrayList<Station> listOfStations = (ArrayList<Station>) this.stationRepository.findAll();
-        ArrayList<Station> toBeRemoved = new ArrayList<>();
-        for (Station station : listOfStations) {
-            if(getUsableBikesByStationName(station.getName()).isEmpty()) {
-                toBeRemoved.add(station);
+        ArrayList<Station> usableStartStations = new ArrayList<>();
+        for (Station station :
+             listOfStations) {
+            if(!getUsableBikesByStationName(station.getName()).isEmpty()) {
+               usableStartStations.add(station);
             }
         }
-        if (listOfStations.isEmpty()) {
-            return new ArrayList<>();
-        }
-        if (toBeRemoved.isEmpty()) {
-            return listOfStations;
-        }
-        listOfStations.removeAll(toBeRemoved);
-        return listOfStations;
+
+        return mapStationsToDTO(usableStartStations);
+
     }
 
     @Override
-    public ArrayList<Station> getFreeEndStations() throws Exception{
+    public ArrayList<StationGetDTO> getFreeEndStations() throws Exception{
         ArrayList<Station> listOfStations = (ArrayList<Station>) this.stationRepository.findAll();
-        ArrayList<Station> toBeRemoved = new ArrayList<>();
+        ArrayList<Station> usableEndStations = new ArrayList<>();
         for (Station station : listOfStations) {
-            if(getFreeSlotsByStationName(station.getName()) == 0) {
-                toBeRemoved.add(station);
+            if(getFreeSlotsByStationName(station.getName()) != 0) {
+                usableEndStations.add(station);
             }
         }
-        if (listOfStations.isEmpty()) {
-            return new ArrayList<>();
-        }
-        if (toBeRemoved.isEmpty()) {
-            return listOfStations;
-        }
-        listOfStations.removeAll(toBeRemoved);
-        return listOfStations;
+
+        //TODO: Check if I need to receive the selected station for the beginning of the ride and remove it from the returned list
+
+        return mapStationsToDTO(usableEndStations);
     }
 }

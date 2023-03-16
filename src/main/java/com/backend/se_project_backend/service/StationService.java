@@ -26,7 +26,7 @@ public interface StationService {
 
     ArrayList<BikeGetDTO> getUsableBikesByStationName(String stationName) throws DocumentNotFoundException;
 
-    ArrayList<Station> getUsableStartStations() throws DocumentNotFoundException;
+    ArrayList<StationGetDTO> getUsableStartStations() throws Exception;
 
-    ArrayList<Station> getFreeEndStations() throws Exception;
+    ArrayList<StationGetDTO> getFreeEndStations() throws Exception;
 }
