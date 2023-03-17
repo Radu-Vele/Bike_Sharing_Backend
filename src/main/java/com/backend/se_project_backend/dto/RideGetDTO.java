@@ -1,22 +1,17 @@
 package com.backend.se_project_backend.dto;
 
-import com.backend.se_project_backend.model.Bike;
-import com.backend.se_project_backend.model.Station;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-//TODO: Replace with @Data and @Builder
-public class RideDTO {
-
+public class RideGetDTO {
     @NotBlank
     private String startStationName;
 
@@ -25,4 +20,10 @@ public class RideDTO {
 
     @NotNull
     private long bikeExternalId;
+
+    @NotNull
+    private String startTime; //TODO: is it ok to return them as string?
+
+    @NotNull
+    private String endTime;
 }

@@ -69,7 +69,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UniqueDBFieldException.class)
     public ResponseEntity<Object> handleUniqueDBFieldException (
             UniqueDBFieldException ex, WebRequest request) {
-        String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
@@ -85,7 +84,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(io.jsonwebtoken.SignatureException.class)
-    public ResponseEntity<Object> handleDocumentNotFoundException ( //TODO: (?) How to catch these kind of internal exceptions (or JWT-related).
+    public ResponseEntity<Object> handleDocumentNotFoundException ( //TODO: (?) How to catch these kind of internal exceptions (or JWT-related). check https://medium.com/@genie137/jwt-exceptions-in-spring-boot-84d3c0f928a1
             SignatureException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }

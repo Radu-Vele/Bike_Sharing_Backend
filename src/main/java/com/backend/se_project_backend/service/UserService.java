@@ -25,11 +25,11 @@ public interface UserService {
 
     UserDetailsDTO edit(String username, UserEditDTO userEditDTO) throws UserAlreadyRegisteredException;
 
-    User editStartRide(Ride ride, String username);
+    void editStartRide(Ride ride, String username) throws Exception;
 
-    User editEndRide(Ride ride, String username);
+    void editEndRide(Ride ride, String username) throws Exception;
 
     UserDetailsDTO getUserDetails(String username) throws Exception;
 
-    JwtResponse authenticate(JwtRequest request);
+    JwtResponse authenticate(JwtRequest request) throws Exception;
 }

@@ -1,14 +1,20 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.RideGetDTO;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.RideRepository;
 import com.backend.se_project_backend.dto.RideDTO;
+import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
+import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,7 +27,9 @@ public class RideServiceImpl implements RideService {
 
     private final UserService userService;
 
-    private final RecommenderService recommenderService;
+    //private final RecommenderService recommenderService;
+
+    private final ModelMapper modelMapper;
 
     @Override
     public void create(Ride ride) {
@@ -34,47 +42,47 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public boolean startRide(RideDTO ride) {
+    public void startRide(String username, RideDTO ride) throws Exception {
+        User user = this.userService.findUserByUsername(username);
+        if(user.isInActiveRide()) {
+            throw new IllegalOperationException("The user already has an active ride. Can not start a new one.");
+        }
         Ride newRide = new Ride();
         newRide.startTime();
-        newRide.setStartStationId(ride.getStartStationId());
-        newRide.setEndStationId(ride.getEndStationId());
-        newRide.setBikeId(ride.getBikeId());
-        newRide.setUsername(ride.getUsername());
-        String path = recommenderService.dijkstra(newRide.getStartStationId(), newRide.getEndStationId());
-        newRide.setRecommendation(path);
 
-//        if (stationService.removeBike(newRide.getStartStationId(), newRide.getBikeId())) {
-//            rideRepository.save(newRide);
-//            userService.editStartRide(newRide, ride.getUsername());
-//            System.out.println(path);
-//            return true;
-//        }
-        return false;
+        stationService.removeBike(ride.getStartStationName(), ride.getBikeExternalId()); //also checks if the bike is in that station
+        newRide.setStartStationName(ride.getStartStationName());
+
+        if(stationService.getFreeSlotsByStationName(ride.getEndStationName()) == 0) {
+            throw new IllegalOperationException("The chosen end station has no free slots.");
+        }
+        newRide.setEndStationName(ride.getEndStationName());
+        newRide.setBikeExternalId(ride.getBikeExternalId());
+        //TODO: add recommender String path = recommenderService.dijkstra(newRide.getStartStationId(), newRide.getEndStationId());
+        newRide.setRecommendation("To be implemented...");
+        rideRepository.save(newRide);
+        userService.editStartRide(newRide, username);
     }
 
     @Override
-    public boolean endRide(String rideId) {
-        Ride ride = findRideById(rideId);
+    public void endRide(String username) throws Exception {
+        Ride ride = userService.findUserByUsername(username).getCurrentRide();
+        stationService.addBike(ride.getEndStationName(), ride.getBikeExternalId());
         ride.setCompleted(true);
         ride.endTime();
-
-/*        if (stationService.addBike(ride.getEndStationId(), ride.getBikeId())) {
-            rideRepository.save(ride);
-            userService.editEndRide(ride, ride.getUsername());
-            return true;
-        }*/
-
-        return false;
+        userService.editEndRide(ride, username);
+        rideRepository.save(ride);
     }
 
     @Override
-    public List<Ride> findRidesByUser(String username) throws Exception {
-        if (userService.userByUsernameExists(username)) {
-            User user = userService.findUserByUsername(username);
-            return user.getRideList();
+    public List<RideGetDTO> findRidesByUser(String username) throws Exception {
+        User user = userService.findUserByUsername(username);
+        ArrayList<RideGetDTO> rideGetDTOArrayList = new ArrayList<>();
+        for (Ride ride : user.getRideList()) {
+            RideGetDTO rideGetDTO = this.modelMapper.map(ride, RideGetDTO.class);
+            rideGetDTOArrayList.add(rideGetDTO);
         }
-        return null;
+        return rideGetDTOArrayList;
     }
 
     @Override

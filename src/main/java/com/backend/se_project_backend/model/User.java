@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRoleEnum role; //embed roles for each user
 
-    private boolean hasActiveRide = false;
+    private boolean inActiveRide = false;
 
     @DBRef
     private Ride currentRide;

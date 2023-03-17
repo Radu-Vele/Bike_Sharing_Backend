@@ -19,13 +19,11 @@ public class Ride {
     @Id
     private String id;
 
-    private String bikeId; //TODO: Maybe keep track of more human-readable info (i.e. name)
+    private long bikeExternalId;
 
-    private String startStationId;
+    private String startStationName;
 
-    private String endStationId;
-
-    private String username;
+    private String endStationName;
 
     private LocalDateTime startTime;
 
