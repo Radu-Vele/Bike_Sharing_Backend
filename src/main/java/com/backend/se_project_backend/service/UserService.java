@@ -10,6 +10,8 @@ import com.backend.se_project_backend.dto.UserDTO;
 import com.backend.se_project_backend.dto.UserEditDTO;
 import com.backend.se_project_backend.utils.exceptions.UserAlreadyRegisteredException;
 
+import javax.mail.MessagingException;
+
 public interface UserService {
     User findUserByUsername(String username) throws Exception;
 
@@ -19,7 +21,7 @@ public interface UserService {
 
     String roleByUsername(String username) throws Exception;
 
-    UserCreatedDTO register(UserDTO user, boolean isAdmin) throws UserAlreadyRegisteredException;
+    UserCreatedDTO register(UserDTO user, boolean isAdmin) throws UserAlreadyRegisteredException, MessagingException;
 
     void delete(String username);
 

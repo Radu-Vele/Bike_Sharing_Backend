@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.mail.MessagingException;
 import javax.xml.bind.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.backend.se_project_backend.utils.StringConstants.EX_MAIL_NOT_SENT;
 
 /**
  * Handles all exceptions in the program
@@ -43,7 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUsernameNotFoundException ( //TODO: (?) Why is this not caught?
+    public ResponseEntity<Object> handleUsernameNotFoundException (
             UsernameNotFoundException ex, WebRequest request) {
         String bodyOfResponse = "There is no user associated with the given token";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -84,8 +87,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(io.jsonwebtoken.SignatureException.class)
-    public ResponseEntity<Object> handleDocumentNotFoundException ( //TODO: (?) How to catch these kind of internal exceptions (or JWT-related). check https://medium.com/@genie137/jwt-exceptions-in-spring-boot-84d3c0f928a1
+    public ResponseEntity<Object> handleDocumentNotFoundException (
             SignatureException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<Object> handleMessagingException (MessagingException   ex, WebRequest request) {
+        String bodyOfText = EX_MAIL_NOT_SENT + ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfText, new HttpHeaders(), HttpStatus.CONTINUE, request);
     }
 }

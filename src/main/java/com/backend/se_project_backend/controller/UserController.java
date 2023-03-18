@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @RestController
@@ -45,13 +46,13 @@ public class UserController {
 
     @PostMapping("/signup")
     @CrossOrigin
-    public ResponseEntity<?> signup(@Valid @RequestBody UserDTO user) throws UserAlreadyRegisteredException {
+    public ResponseEntity<?> signup(@Valid @RequestBody UserDTO user) throws Exception {
         return new ResponseEntity<UserCreatedDTO>(this.userService.register(user, false), HttpStatus.CREATED);
     }
 
     @PostMapping("/signup-admin")
     @CrossOrigin
-    public ResponseEntity<?> signupAdmin(@Valid @RequestBody UserDTO user) throws UserAlreadyRegisteredException {
+    public ResponseEntity<?> signupAdmin(@Valid @RequestBody UserDTO user) throws Exception {
         return new ResponseEntity<UserCreatedDTO>(this.userService.register(user, true), HttpStatus.CREATED);
     }
 

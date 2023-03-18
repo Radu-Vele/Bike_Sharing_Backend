@@ -23,8 +23,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static com.backend.se_project_backend.utils.StringConstants.EMAIL_CONFIRM_BODY;
+import static com.backend.se_project_backend.utils.StringConstants.EMAIL_CONFIRM_SUBJECT;
 
 @Service
 @Transactional
@@ -38,6 +42,8 @@ public class UserServiceImpl implements UserService{
     private final ModelMapper modelMapper;
 
     private final AuthenticationManager authenticationManager;
+
+    private final EmailService emailService;
 
     private final JwtUtility jwtUtility;
 
@@ -70,7 +76,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserCreatedDTO register(UserDTO user, boolean isAdmin) throws UserAlreadyRegisteredException {
+    public UserCreatedDTO register(UserDTO user, boolean isAdmin) throws UserAlreadyRegisteredException, MessagingException {
         if (this.userByUsernameExists(user.getUsername()) || this.userByEmailExists(user.getEmail())) {
             throw new UserAlreadyRegisteredException("Username or email address already in use.");
         }
@@ -83,6 +89,9 @@ public class UserServiceImpl implements UserService{
         else {
             newUser.setRole(UserRoleEnum.USER);
         }
+
+        this.emailService.send(newUser.getEmail(), EMAIL_CONFIRM_SUBJECT, EMAIL_CONFIRM_BODY);
+
         return this.modelMapper.map(this.userRepository.save(newUser), UserCreatedDTO.class);
     }
 
