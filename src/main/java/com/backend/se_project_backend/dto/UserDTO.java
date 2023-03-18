@@ -22,9 +22,6 @@ public class UserDTO {
     @Email(message = "A valid email address is mandatory")
     private String email;
 
-    @NotNull
-    private UserRoleEnum role;
-
     @NotBlank(message = "A password is mandatory")
     private String password;
 

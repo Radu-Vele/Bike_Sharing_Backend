@@ -10,6 +10,7 @@ import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.UserRepository;
 import com.backend.se_project_backend.dto.UserDTO;
 import com.backend.se_project_backend.dto.UserEditDTO;
+import com.backend.se_project_backend.utils.enums.UserRoleEnum;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
 import com.backend.se_project_backend.utils.exceptions.UserAlreadyRegisteredException;
@@ -69,13 +70,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserCreatedDTO register(UserDTO user) throws UserAlreadyRegisteredException {
+    public UserCreatedDTO register(UserDTO user, boolean isAdmin) throws UserAlreadyRegisteredException {
         if (this.userByUsernameExists(user.getUsername()) || this.userByEmailExists(user.getEmail())) {
             throw new UserAlreadyRegisteredException("Username or email address already in use.");
         }
 
         User newUser = this.modelMapper.map(user, User.class);
         newUser.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        if (isAdmin) {
+            newUser.setRole(UserRoleEnum.ADMIN);
+        }
+        else {
+            newUser.setRole(UserRoleEnum.USER);
+        }
         return this.modelMapper.map(this.userRepository.save(newUser), UserCreatedDTO.class);
     }
 

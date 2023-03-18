@@ -27,6 +27,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .antMatchers("/register", "/signup", "/login", "/authenticate")
                 .permitAll()
+                .antMatchers("/signup-admin")
+                .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()

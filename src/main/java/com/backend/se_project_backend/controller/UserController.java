@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,13 @@ public class UserController {
     @PostMapping("/signup")
     @CrossOrigin
     public ResponseEntity<?> signup(@Valid @RequestBody UserDTO user) throws UserAlreadyRegisteredException {
-        return new ResponseEntity<UserCreatedDTO>(this.userService.register(user), HttpStatus.CREATED);
+        return new ResponseEntity<UserCreatedDTO>(this.userService.register(user, false), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/signup-admin")
+    @CrossOrigin
+    public ResponseEntity<?> signupAdmin(@Valid @RequestBody UserDTO user) throws UserAlreadyRegisteredException {
+        return new ResponseEntity<UserCreatedDTO>(this.userService.register(user, true), HttpStatus.CREATED);
     }
 
     @GetMapping("/account-details")

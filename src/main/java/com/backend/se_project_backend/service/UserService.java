@@ -19,7 +19,7 @@ public interface UserService {
 
     String roleByUsername(String username) throws Exception;
 
-    UserCreatedDTO register(UserDTO user) throws UserAlreadyRegisteredException;
+    UserCreatedDTO register(UserDTO user, boolean isAdmin) throws UserAlreadyRegisteredException;
 
     void delete(String username);
 
