@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/account-details")
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     public UserDetailsDTO showAccountDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) throws Exception{
         String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         return this.userService.getUserDetails(username);

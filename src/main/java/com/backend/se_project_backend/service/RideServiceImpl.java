@@ -27,6 +27,8 @@ public class RideServiceImpl implements RideService {
 
     private final UserService userService;
 
+    private final PDFService pdfService;
+
     //private final RecommenderService recommenderService;
 
     private final ModelMapper modelMapper;
@@ -72,6 +74,8 @@ public class RideServiceImpl implements RideService {
         ride.endTime();
         userService.editEndRide(ride, username);
         rideRepository.save(ride);
+
+        pdfService.generateRideReceipt(ride);
     }
 
     @Override
