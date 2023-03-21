@@ -27,8 +27,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final AuthenticationManager authenticationManager;
-
     private final JwtUtility jwtUtility;
 
     @PostMapping("/login")
@@ -57,10 +55,10 @@ public class UserController {
     }
 
     @GetMapping("/account-details")
-    @CrossOrigin(origins = "*")
-    public UserDetailsDTO showAccountDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) throws Exception{
+    @CrossOrigin
+    public ResponseEntity<?> showAccountDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) throws Exception {
         String username = jwtUtility.getUsernameFromToken(auth.substring(7));
-        return this.userService.getUserDetails(username);
+        return new ResponseEntity<UserDetailsDTO>(this.userService.getUserDetails(username), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete-account")
@@ -73,7 +71,7 @@ public class UserController {
 
     @PutMapping("/edit-account")
     @CrossOrigin
-    public ResponseEntity<?> editAccount(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @RequestBody UserEditDTO userEditDTO) throws Exception{
+    public ResponseEntity<?> editAccount(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @Valid @RequestBody UserEditDTO userEditDTO) throws Exception {
         String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         UserDetailsDTO editedDetails = this.userService.edit(username, userEditDTO);
         return new ResponseEntity<UserDetailsDTO>(editedDetails, HttpStatus.OK);

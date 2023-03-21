@@ -5,17 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserEditDTO {
+public class UserEditDTO { //TODO: Edit password
 
-    private String username;
-
+    @NotBlank
     private String legalName;
 
-    //TODO: Add Email editing
-
+    @NotBlank
     private String phoneNumber;
 }

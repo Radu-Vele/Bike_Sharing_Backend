@@ -20,7 +20,6 @@ public class RideDTO {
     @NotBlank
     private String startStationName;
 
-    @NotBlank
     private String endStationName;
 
     @NotNull

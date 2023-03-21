@@ -23,11 +23,9 @@ public class UserDetailsDTO {
 
     private boolean hasActiveRide = false;
 
-    private Ride currentRide;
+    private RideDTO currentRide;
 
     private String legalName;
-
-    private List<Ride> rideList;
 
     private String phoneNumber;
 

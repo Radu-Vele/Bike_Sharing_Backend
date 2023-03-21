@@ -3,13 +3,10 @@ package com.backend.se_project_backend.service;
 import com.backend.se_project_backend.config.jwt.JwtRequest;
 import com.backend.se_project_backend.config.jwt.JwtResponse;
 import com.backend.se_project_backend.config.jwt.JwtUtility;
-import com.backend.se_project_backend.dto.UserCreatedDTO;
-import com.backend.se_project_backend.dto.UserDetailsDTO;
+import com.backend.se_project_backend.dto.*;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.UserRepository;
-import com.backend.se_project_backend.dto.UserDTO;
-import com.backend.se_project_backend.dto.UserEditDTO;
 import com.backend.se_project_backend.utils.enums.UserRoleEnum;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
@@ -124,14 +121,6 @@ public class UserServiceImpl implements UserService{
     public UserDetailsDTO edit(String username, UserEditDTO userEditDTO) throws UserAlreadyRegisteredException {
         Optional<User> user = this.userRepository.findByUsername(username);
         if(user.isPresent()) {
-            if(this.userByUsernameExists(user.get().getUsername())) {
-                throw new UserAlreadyRegisteredException();
-            }
-            if(this.userByEmailExists(user.get().getEmail())) {
-                throw new UserAlreadyRegisteredException();
-            }
-
-            user.get().setUsername(userEditDTO.getUsername());
             user.get().setLegalName(userEditDTO.getLegalName());
             user.get().setPhoneNumber(userEditDTO.getPhoneNumber());
             return this.modelMapper.map(userRepository.save(user.get()), UserDetailsDTO.class);
@@ -184,6 +173,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDetailsDTO getUserDetails(String username) throws Exception{
         User user = this.findUserByUsername(username);
-        return this.modelMapper.map(user, UserDetailsDTO.class);
+        UserDetailsDTO userDetailsDTO = this.modelMapper.map(user, UserDetailsDTO.class);
+        if(user.isInActiveRide()) {
+            userDetailsDTO.setCurrentRide(this.modelMapper.map(user.getCurrentRide(), RideDTO.class));
+        }
+        return userDetailsDTO;
     }
 }
