@@ -128,6 +128,9 @@ public class UserServiceImpl implements UserService{
         else{
             throw new UsernameNotFoundException("User not found");
         }
+        //TODO: (Edit) Add username edit (new authentication)
+        //TODO: (Edit) Add forgot password (in login page)
+        //TODO: (Edit) Think of better implementation (field + flag)
     }
 
     @Override
@@ -156,7 +159,7 @@ public class UserServiceImpl implements UserService{
         }
 
         user.get().setInActiveRide(false);
-        user.get().setCurrentRide(null);
+        // user.get().setCurrentRide(null); TODO: check if I will keep it like this (usage: cache last ride for the feedback form.)
 
         if(user.get().getRideList() == null) {
             ArrayList<Ride> newRidesList = new ArrayList<>();
@@ -176,6 +179,7 @@ public class UserServiceImpl implements UserService{
         UserDetailsDTO userDetailsDTO = this.modelMapper.map(user, UserDetailsDTO.class);
         if(user.isInActiveRide()) {
             userDetailsDTO.setCurrentRide(this.modelMapper.map(user.getCurrentRide(), RideDTO.class));
+            userDetailsDTO.setInActiveRide(true);
         }
         return userDetailsDTO;
     }

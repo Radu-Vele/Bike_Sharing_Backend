@@ -60,6 +60,8 @@ public class BikeServiceImpl implements BikeService {
             }
 
             bikeRepository.save(bikeById.get());
+            //TODO: Save the new result the other instance of the bike found in a list of a Station Document or modify the station to include @DBref
+                // idea: fetch username from token and extract the destination station of the cached ride to find where the bike is.
         }
         else {
             throw new DocumentNotFoundException("There is no bike with the given external ID in the database.");

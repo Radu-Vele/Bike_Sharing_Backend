@@ -21,7 +21,7 @@ public class UserDetailsDTO {
 
     private UserRoleEnum role;
 
-    private boolean hasActiveRide = false;
+    private boolean isInActiveRide = false;
 
     private RideDTO currentRide;
 
