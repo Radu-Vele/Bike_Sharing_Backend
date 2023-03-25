@@ -9,11 +9,16 @@ import com.backend.se_project_backend.dto.StationBikePairDTO;
 import com.backend.se_project_backend.dto.StationDTO;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 @RestController
@@ -76,4 +81,15 @@ public class StationController {
     @GetMapping ("/get-end-stations")
     @CrossOrigin
     public ArrayList<StationGetDTO> getListOfFreeStations() throws Exception { return this.stationService.getFreeEndStations(); }
+
+    /**
+     * Import stations found in csv file and populate each one to half its capacity
+     * - the DB collections for bikes and stations are emptied
+     */
+    @PostMapping("/init-stations-bikes-csv")
+    @CrossOrigin
+    public ResponseEntity<?> importStationsBikesInit() throws Exception {
+        stationService.importStationsBikesInit();
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

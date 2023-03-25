@@ -26,10 +26,6 @@ public class BikeServiceImpl implements BikeService {
 
     private final SequenceGeneratorService sequenceGeneratorService;
 
-    private final UserService userService;
-
-    private final StationService stationService;
-
     @Override public Optional<Bike> bikeByExternalId(long externalId) {
         return this.bikeRepository.findByExternalId(externalId);
     }
@@ -45,18 +41,6 @@ public class BikeServiceImpl implements BikeService {
     @Override
     public void delete(String bikeId) {
         this.bikeRepository.deleteById(bikeId);
-    }
-
-    private void reflectNewRatingInStation(String username, Bike editedBike) throws Exception{
-        //reflect the changed rating in the list of bikes from the end station document
-        String endStationName = userService.findUserByUsername(username).getCurrentRide().getEndStationName();
-        Station endStation = stationService.getStationByName(endStationName);
-        for (Bike bike: endStation.getBikeList()) {
-            if(bike.getExternalId() == editedBike.getExternalId()) {
-                bike.setRating(editedBike.getRating());
-            }
-        }
-        stationService.editStation(endStation);
     }
 
     @Override
@@ -81,8 +65,6 @@ public class BikeServiceImpl implements BikeService {
             }
 
             bikeRepository.save(bikeById.get());
-            reflectNewRatingInStation(username, bikeById.get());
-
         }
         else {
             throw new DocumentNotFoundException("There is no bike with the given external ID in the database.");

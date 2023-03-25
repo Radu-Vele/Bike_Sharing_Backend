@@ -1,5 +1,6 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeGetDTO;
 import com.backend.se_project_backend.dto.StationDTO;
 import com.backend.se_project_backend.dto.StationGetDTO;
@@ -14,10 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +35,17 @@ import java.util.stream.Collectors;
 public class StationServiceImpl implements StationService {
 
     private final StationRepository stationRepository;
+
     private final BikeRepository bikeRepository;
+
+    private final BikeService bikeService;
+
     private final ModelMapper modelMapper;
+
+    private final UserService userService;
+
+    @Value("${csv.stations}")
+    String stations_csv_filename;
 
     private void validateStationBikePairWithDB(Optional<Station> stationByName, Optional<Bike> bikeByExternalId ) throws Exception{
 
@@ -209,4 +224,55 @@ public class StationServiceImpl implements StationService {
     public void editStation(Station station) {
         this.stationRepository.save(station);
     }
+
+    @Override
+    public void importStationsBikesInit() throws Exception {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(stations_csv_filename)));
+        List<StationDTO> stationsFromFile = bufferedReader.lines()
+                .map(s -> {
+                    String[] words = s.split(",");
+                    Double latitude = Double.parseDouble(words[0]);
+                    Double longitude = Double.parseDouble(words[1]);
+                    long maximumCapacity = Long.parseLong(words[3]);
+                    String name = words[2];
+                    return new StationDTO(latitude, longitude, maximumCapacity, name);
+                })
+                .toList();
+
+        //empty up databases with bikes and stations
+        this.stationRepository.deleteAll();
+        this.bikeRepository.deleteAll();
+
+        for (StationDTO stationDTO : stationsFromFile) {
+            create(stationDTO);
+
+            //populate with bikes
+            for(int i = 0; i < stationDTO.getMaximumCapacity() / 2; i++) {
+                BikeDTO bikeDTO = new BikeDTO();
+                bikeDTO.setAvailable(false);
+                bikeDTO.setUsable(true);
+                bikeDTO.setRating(0.0);
+                long externalId = this.bikeService.create(bikeDTO);
+                addBike(stationDTO.getName(), externalId);
+            }
+        }
+    }
+
+    @Override
+    public void reflectNewRatingInStation(String username, long editedBikeExternalId) throws Exception{
+        //reflect the changed rating in the list of bikes from the end station document
+        Optional<Bike> editedBike = this.bikeService.bikeByExternalId(editedBikeExternalId);
+        if(editedBike.isEmpty()) {
+            throw new DocumentNotFoundException("There is no bike having the given external ID");
+        }
+        String endStationName = userService.findUserByUsername(username).getCurrentRide().getEndStationName();
+        Station endStation = getStationByName(endStationName);
+        for (Bike bike: endStation.getBikeList()) {
+            if(bike.getExternalId() == editedBikeExternalId) {
+                bike.setRating(editedBike.get().getRating());
+            }
+        }
+        editStation(endStation);
+    }
+
 }

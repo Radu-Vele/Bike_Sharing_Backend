@@ -19,6 +19,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.mail.MessagingException;
 import javax.xml.bind.ValidationException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,5 +98,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleMessagingException (MessagingException   ex, WebRequest request) {
         String bodyOfText = EX_MAIL_NOT_SENT + ex.getMessage();
         return handleExceptionInternal(ex, bodyOfText, new HttpHeaders(), HttpStatus.CONTINUE, request);
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<Object> handleFileNotFoundException (FileNotFoundException ex, WebRequest request) {
+        String bodyOfText = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfText, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

@@ -4,6 +4,7 @@ import com.backend.se_project_backend.config.jwt.JwtUtility;
 import com.backend.se_project_backend.service.BikeService;
 import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeRatingDTO;
+import com.backend.se_project_backend.service.StationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ public class BikeController {
     private final BikeService bikeService;
 
     private final JwtUtility jwtUtility;
+
+    private final StationService stationService;
 
     @PostMapping("/create-bike")
     @CrossOrigin
@@ -40,6 +43,7 @@ public class BikeController {
     public ResponseEntity<?> updateBikeRating(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @Valid @RequestBody BikeRatingDTO bikeRatingDTO) throws Exception {
         String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         this.bikeService.calculateRating(bikeRatingDTO.getExternalId(), bikeRatingDTO.getGivenRating(), username);
+        this.stationService.reflectNewRatingInStation(username, bikeRatingDTO.getExternalId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

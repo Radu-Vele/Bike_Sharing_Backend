@@ -8,6 +8,7 @@ import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public interface StationService {
@@ -33,4 +34,8 @@ public interface StationService {
     Station getStationByName(String name) throws Exception;
 
     void editStation(Station station);
+
+    void importStationsBikesInit() throws Exception;
+
+    void reflectNewRatingInStation(String username, long editedBikeExternalId) throws Exception;
 }
