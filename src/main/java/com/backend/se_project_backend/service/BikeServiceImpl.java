@@ -3,6 +3,9 @@ package com.backend.se_project_backend.service;
 import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeRatingDTO;
 import com.backend.se_project_backend.model.Bike;
+import com.backend.se_project_backend.model.Ride;
+import com.backend.se_project_backend.model.Station;
+import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.BikeRepository;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +21,14 @@ import java.util.Optional;
 public class BikeServiceImpl implements BikeService {
 
     private final BikeRepository bikeRepository;
+
     private final ModelMapper modelMapper;
+
     private final SequenceGeneratorService sequenceGeneratorService;
+
+    private final UserService userService;
+
+    private final StationService stationService;
 
     @Override public Optional<Bike> bikeByExternalId(long externalId) {
         return this.bikeRepository.findByExternalId(externalId);
@@ -38,8 +47,20 @@ public class BikeServiceImpl implements BikeService {
         this.bikeRepository.deleteById(bikeId);
     }
 
+    private void reflectNewRatingInStation(String username, Bike editedBike) throws Exception{
+        //reflect the changed rating in the list of bikes from the end station document
+        String endStationName = userService.findUserByUsername(username).getCurrentRide().getEndStationName();
+        Station endStation = stationService.getStationByName(endStationName);
+        for (Bike bike: endStation.getBikeList()) {
+            if(bike.getExternalId() == editedBike.getExternalId()) {
+                bike.setRating(editedBike.getRating());
+            }
+        }
+        stationService.editStation(endStation);
+    }
+
     @Override
-    public void calculateRating(long externalId, Double currentRating) throws DocumentNotFoundException {
+    public void calculateRating(long externalId, Double currentRating, String username) throws Exception {
         Optional<Bike> bikeById = bikeByExternalId(externalId);
         if (bikeById.isPresent()) {
             Double previousRating = bikeById.get().getRating();
@@ -60,8 +81,8 @@ public class BikeServiceImpl implements BikeService {
             }
 
             bikeRepository.save(bikeById.get());
-            //TODO: Save the new result the other instance of the bike found in a list of a Station Document or modify the station to include @DBref
-                // idea: fetch username from token and extract the destination station of the cached ride to find where the bike is.
+            reflectNewRatingInStation(username, bikeById.get());
+
         }
         else {
             throw new DocumentNotFoundException("There is no bike with the given external ID in the database.");

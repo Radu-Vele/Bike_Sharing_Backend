@@ -18,5 +18,5 @@ public interface BikeService {
 
     public void delete(String bikeId);
 
-    public void calculateRating(long externalId, Double currentRating) throws DocumentNotFoundException;
+    public void calculateRating(long externalId, Double currentRating, String username) throws Exception;
 }

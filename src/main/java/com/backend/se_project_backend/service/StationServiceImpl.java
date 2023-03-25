@@ -47,7 +47,7 @@ public class StationServiceImpl implements StationService {
         Optional<Station> stationByName = this.stationRepository.findByName(stationName);
         Optional<Bike> bikeByExternalId = this.bikeRepository.findByExternalId(bikeExternalId);
 
-        validateStationBikePairWithDB( stationByName, bikeByExternalId);
+        validateStationBikePairWithDB(stationByName, bikeByExternalId);
 
         if(getFreeSlotsByStationName(stationByName.get().getName()) == 0) {
             throw new IllegalOperationException("Cannot add a bike to a full station");
@@ -194,5 +194,19 @@ public class StationServiceImpl implements StationService {
         //TODO: Check if I need to receive the selected station for the beginning of the ride and remove it from the returned list
 
         return mapStationsToDTO(usableEndStations);
+    }
+
+    @Override
+    public Station getStationByName(String name) throws Exception {
+        Optional<Station> foundStation = this.stationRepository.findByName(name);
+        if(foundStation.isEmpty()) {
+            throw new DocumentNotFoundException("Cannot find a station with the given name");
+        }
+        return foundStation.get();
+    }
+
+    @Override
+    public void editStation(Station station) {
+        this.stationRepository.save(station);
     }
 }

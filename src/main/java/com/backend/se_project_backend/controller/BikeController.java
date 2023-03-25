@@ -1,9 +1,11 @@
 package com.backend.se_project_backend.controller;
 
+import com.backend.se_project_backend.config.jwt.JwtUtility;
 import com.backend.se_project_backend.service.BikeService;
 import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeRatingDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import javax.validation.Valid;
 public class BikeController {
 
     private final BikeService bikeService;
+
+    private final JwtUtility jwtUtility;
 
     @PostMapping("/create-bike")
     @CrossOrigin
@@ -33,8 +37,9 @@ public class BikeController {
 
     @PutMapping ("/calculate-rating")
     @CrossOrigin
-    public ResponseEntity<?> updateBikeRating(@Valid @RequestBody BikeRatingDTO bikeRatingDTO) throws Exception {
-        this.bikeService.calculateRating(bikeRatingDTO.getExternalId(), bikeRatingDTO.getGivenRating());
+    public ResponseEntity<?> updateBikeRating(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @Valid @RequestBody BikeRatingDTO bikeRatingDTO) throws Exception {
+        String username = jwtUtility.getUsernameFromToken(auth.substring(7));
+        this.bikeService.calculateRating(bikeRatingDTO.getExternalId(), bikeRatingDTO.getGivenRating(), username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

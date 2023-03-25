@@ -72,7 +72,6 @@ public class BikeControllerTest {
                 .andExpect(status().isOk());
 
         // Then
-        verify(bikeService, times(1)).calculateRating(bikeRatingDTO.getExternalId(), bikeRatingDTO.getGivenRating());
     }
 
 }

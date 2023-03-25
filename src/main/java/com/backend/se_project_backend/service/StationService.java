@@ -29,4 +29,8 @@ public interface StationService {
     ArrayList<StationGetDTO> getUsableStartStations() throws Exception;
 
     ArrayList<StationGetDTO> getFreeEndStations() throws Exception;
+
+    Station getStationByName(String name) throws Exception;
+
+    void editStation(Station station);
 }
