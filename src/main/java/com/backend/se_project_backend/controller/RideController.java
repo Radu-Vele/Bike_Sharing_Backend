@@ -1,8 +1,8 @@
 package com.backend.se_project_backend.controller;
 
 import com.backend.se_project_backend.config.jwt.JwtUtility;
+import com.backend.se_project_backend.dto.DatesIntervalDTO;
 import com.backend.se_project_backend.dto.RideGetDTO;
-import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.service.RideService;
 import com.backend.se_project_backend.dto.RideDTO;
 import lombok.AllArgsConstructor;
@@ -44,5 +44,11 @@ public class RideController {
     public List<RideGetDTO> showRidesByUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) throws Exception {
         String username = jwtUtility.getUsernameFromToken(auth.substring(7));
         return this.rideService.findRidesByUser(username);
+    }
+
+    @PostMapping("/fetch-rides-statistics") //TODO: Check if it s too unorthodox
+    @CrossOrigin
+    public ResponseEntity<?> fetchAllRidesBetween(@Valid @RequestBody DatesIntervalDTO dateDTO) {
+        return ResponseEntity.ok(rideService.fetchAllRidesBetween(dateDTO));
     }
 }

@@ -1,5 +1,6 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.DatesIntervalDTO;
 import com.backend.se_project_backend.dto.RideGetDTO;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.dto.RideDTO;
@@ -19,4 +20,6 @@ public interface RideService {
     List<RideGetDTO> findRidesByUser(String username) throws Exception;
 
     Ride findRideById(String rideId);
+
+    List<RideGetDTO> fetchAllRidesBetween(DatesIntervalDTO dateDTO);
 }

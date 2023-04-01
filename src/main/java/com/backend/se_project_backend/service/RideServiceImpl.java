@@ -1,17 +1,19 @@
 package com.backend.se_project_backend.service;
 
+import com.backend.se_project_backend.dto.DatesIntervalDTO;
 import com.backend.se_project_backend.dto.RideGetDTO;
 import com.backend.se_project_backend.model.Ride;
 import com.backend.se_project_backend.model.User;
 import com.backend.se_project_backend.repository.RideRepository;
 import com.backend.se_project_backend.dto.RideDTO;
-import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -78,11 +80,9 @@ public class RideServiceImpl implements RideService {
         pdfService.generateRideReceipt(ride);
     }
 
-    @Override
-    public List<RideGetDTO> findRidesByUser(String username) throws Exception {
-        User user = userService.findUserByUsername(username);
+    public List<RideGetDTO> rideListToDTO(List<Ride> rideList) {
         ArrayList<RideGetDTO> rideGetDTOArrayList = new ArrayList<>();
-        for (Ride ride : user.getRideList()) {
+        for (Ride ride : rideList) {
             RideGetDTO rideGetDTO = this.modelMapper.map(ride, RideGetDTO.class);
             rideGetDTOArrayList.add(rideGetDTO);
         }
@@ -90,7 +90,25 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
+    public List<RideGetDTO> findRidesByUser(String username) throws Exception {
+        User user = userService.findUserByUsername(username);
+        return rideListToDTO(user.getRideList());
+    }
+
+    @Override
     public Ride findRideById(String rideId) {
         return this.rideRepository.findById(rideId).orElseThrow();
+    }
+
+    @Override
+    public List<RideGetDTO> fetchAllRidesBetween(DatesIntervalDTO dateDTO) {
+        LocalDateTime lowerBound = LocalDateTime.of(dateDTO.getStartYear(), dateDTO.getStartMonth(), dateDTO.getStartDay(), 0, 0);
+        LocalDateTime upperBound = LocalDateTime.of(dateDTO.getEndYear(), dateDTO.getEndMonth(), dateDTO.getEndDay(), 23, 59);
+        Optional<List<Ride>> resultRides = rideRepository.findRidesEndedSince(lowerBound, upperBound);
+
+        if(resultRides.isPresent()) {
+            return rideListToDTO(resultRides.get());
+        }
+        return new ArrayList<>();
     }
 }
