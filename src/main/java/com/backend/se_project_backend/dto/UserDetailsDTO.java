@@ -23,7 +23,7 @@ public class UserDetailsDTO {
 
     private boolean isInActiveRide = false;
 
-    private RideDTO currentRide;
+    private RideGetDTO currentRide;
 
     private String legalName;
 

@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService{
         User user = this.findUserByUsername(username);
         UserDetailsDTO userDetailsDTO = this.modelMapper.map(user, UserDetailsDTO.class);
         if(user.isInActiveRide()) {
-            userDetailsDTO.setCurrentRide(this.modelMapper.map(user.getCurrentRide(), RideDTO.class));
+            userDetailsDTO.setCurrentRide(this.modelMapper.map(user.getCurrentRide(), RideGetDTO.class));
             userDetailsDTO.setInActiveRide(true);
         }
         return userDetailsDTO;
