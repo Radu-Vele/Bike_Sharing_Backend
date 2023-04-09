@@ -3,6 +3,7 @@ package com.backend.se_project_backend.service;
 import com.backend.se_project_backend.dto.BikeGetDTO;
 import com.backend.se_project_backend.dto.StationDTO;
 import com.backend.se_project_backend.dto.StationGetDTO;
+import com.backend.se_project_backend.dto.StationOptionsDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
@@ -38,4 +39,6 @@ public interface StationService {
     void importStationsBikesInit() throws Exception;
 
     void reflectNewRatingInStation(String username, long editedBikeExternalId) throws Exception;
+
+    void createWithOptions(StationOptionsDTO stationDTO) throws Exception;
 }

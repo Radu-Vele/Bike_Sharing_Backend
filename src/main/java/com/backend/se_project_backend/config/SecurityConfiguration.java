@@ -29,7 +29,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .antMatchers("/register", "/signup", "/login", "/authenticate")
                 .permitAll()
-                .antMatchers("/signup-admin", "/init-stations-bikes-csv", "/fetch-rides-statistics")
+                .antMatchers("/signup-admin",
+                        "/init-stations-bikes-csv",
+                        "/fetch-rides-statistics",
+                        "/create-station-options")
                 .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()

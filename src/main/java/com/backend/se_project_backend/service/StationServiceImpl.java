@@ -1,9 +1,6 @@
 package com.backend.se_project_backend.service;
 
-import com.backend.se_project_backend.dto.BikeDTO;
-import com.backend.se_project_backend.dto.BikeGetDTO;
-import com.backend.se_project_backend.dto.StationDTO;
-import com.backend.se_project_backend.dto.StationGetDTO;
+import com.backend.se_project_backend.dto.*;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.repository.BikeRepository;
@@ -20,10 +17,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -225,6 +219,17 @@ public class StationServiceImpl implements StationService {
         this.stationRepository.save(station);
     }
 
+    private void halfFillStation(StationDTO stationDTO) throws Exception {
+        for(int i = 0; i < stationDTO.getMaximumCapacity() / 2; i++) {
+            BikeDTO bikeDTO = new BikeDTO();
+            bikeDTO.setAvailable(false);
+            bikeDTO.setUsable(true);
+            bikeDTO.setRating(0.0);
+            long externalId = this.bikeService.create(bikeDTO);
+            addBike(stationDTO.getName(), externalId);
+        }
+    }
+
     @Override
     public void importStationsBikesInit() throws Exception {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(stations_csv_filename)));
@@ -245,16 +250,7 @@ public class StationServiceImpl implements StationService {
 
         for (StationDTO stationDTO : stationsFromFile) {
             create(stationDTO);
-
-            //populate with bikes
-            for(int i = 0; i < stationDTO.getMaximumCapacity() / 2; i++) {
-                BikeDTO bikeDTO = new BikeDTO();
-                bikeDTO.setAvailable(false);
-                bikeDTO.setUsable(true);
-                bikeDTO.setRating(0.0);
-                long externalId = this.bikeService.create(bikeDTO);
-                addBike(stationDTO.getName(), externalId);
-            }
+            halfFillStation(stationDTO);
         }
     }
 
@@ -273,6 +269,30 @@ public class StationServiceImpl implements StationService {
             }
         }
         editStation(endStation);
+    }
+
+    private void writeStationToCSV(StationDTO stationDTO) throws Exception{
+        FileWriter fw = new FileWriter(stations_csv_filename, true);
+        fw.write("\n");
+        fw.write(stationDTO.getLatitude().toString());
+        fw.write(",");
+        fw.write(stationDTO.getLongitude().toString());
+        fw.write(",");
+        fw.write(stationDTO.getName());
+        fw.write(",");
+        fw.write(Long.toString(stationDTO.getMaximumCapacity()));
+        fw.close();
+    }
+
+    @Override
+    public void createWithOptions(StationOptionsDTO stationDTO) throws Exception {
+        this.create(stationDTO);
+        if(stationDTO.isFillHalf()) {
+            halfFillStation(stationDTO);
+        }
+        if(stationDTO.isSaveToCSV()) {
+            writeStationToCSV(stationDTO);
+        }
     }
 
 }

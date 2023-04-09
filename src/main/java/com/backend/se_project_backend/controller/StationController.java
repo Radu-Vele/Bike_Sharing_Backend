@@ -1,12 +1,9 @@
 package com.backend.se_project_backend.controller;
 
-import com.backend.se_project_backend.dto.BikeGetDTO;
-import com.backend.se_project_backend.dto.StationGetDTO;
+import com.backend.se_project_backend.dto.*;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.service.StationService;
-import com.backend.se_project_backend.dto.StationBikePairDTO;
-import com.backend.se_project_backend.dto.StationDTO;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +29,13 @@ public class StationController {
     @CrossOrigin
     public ResponseEntity<?> createStation(@Valid @RequestBody StationDTO stationDTO) throws Exception{
         this.stationService.create(stationDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping ("/create-station-options")
+    @CrossOrigin
+    public ResponseEntity<?> createStation(@Valid @RequestBody StationOptionsDTO stationDTO) throws Exception{
+        this.stationService.createWithOptions(stationDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
