@@ -39,6 +39,13 @@ public class StationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PutMapping("/edit-station")
+    @CrossOrigin
+    public ResponseEntity<?> editStation(@Valid @RequestBody StationEditDTO stationEditDTO) throws Exception {
+        this.stationService.editStationNameCapacity(stationEditDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping ("/delete-station")
     @CrossOrigin
     public ResponseEntity<?> deleteStation(@RequestParam String stationName) throws Exception{

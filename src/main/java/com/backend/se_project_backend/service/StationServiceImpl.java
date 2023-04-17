@@ -5,15 +5,13 @@ import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Station;
 import com.backend.se_project_backend.repository.BikeRepository;
 import com.backend.se_project_backend.repository.StationRepository;
+import com.backend.se_project_backend.utils.StringConstants;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import com.backend.se_project_backend.utils.exceptions.IllegalOperationException;
 import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,7 +19,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -217,6 +214,32 @@ public class StationServiceImpl implements StationService {
     @Override
     public void editStation(Station station) {
         this.stationRepository.save(station);
+    }
+
+    @Override
+    public void editStationNameCapacity(StationEditDTO stationEditDTO) throws Exception {
+        Optional<Station> currStation = this.stationRepository.findByName(stationEditDTO.getCurrName());
+        if(currStation.isEmpty()) {
+            throw new DocumentNotFoundException(StringConstants.STATION_NOT_FOUND);
+        }
+        if(!stationEditDTO.getNewName().isBlank()) {
+            currStation.get().setName(stationEditDTO.getNewName());
+        }
+        if(stationEditDTO.getNewCapacity() != 0) {
+            int currNrOfBikes = currStation.get().getBikeList().size();
+            if(currNrOfBikes > stationEditDTO.getNewCapacity()) {
+                //remove excessive bikes
+                while(currNrOfBikes > stationEditDTO.getNewCapacity()) {
+                    Bike toRemove = currStation.get().getBikeList().get(0);
+                    if(toRemove.isAvailable()) {
+                        this.removeBike(currStation.get().getName(), toRemove.getExternalId());
+                    }
+                }
+            }
+            currStation.get().setMaximumCapacity(stationEditDTO.getNewCapacity());
+        }
+
+        this.stationRepository.save(currStation.get());
     }
 
     private void halfFillStation(StationDTO stationDTO) throws Exception {
