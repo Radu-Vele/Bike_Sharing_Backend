@@ -105,9 +105,14 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public void delete(String stationName) throws DocumentNotFoundException {
+    public void delete(String stationName) throws Exception {
         Optional<Station> station = this.stationRepository.findByName(stationName);
         if(station.isPresent()) {
+            //remove all bikes from the station
+            for(Bike bike : station.get().getBikeList()) {
+                removeBike(station.get().getName(), bike.getExternalId());
+            }
+
             this.stationRepository.deleteById(station.get().getId());
         }
         else {
@@ -219,24 +224,28 @@ public class StationServiceImpl implements StationService {
     @Override
     public void editStationNameCapacity(StationEditDTO stationEditDTO) throws Exception {
         Optional<Station> currStation = this.stationRepository.findByName(stationEditDTO.getCurrName());
+
         if(currStation.isEmpty()) {
             throw new DocumentNotFoundException(StringConstants.STATION_NOT_FOUND);
         }
-        if(!stationEditDTO.getNewName().isBlank()) {
-            currStation.get().setName(stationEditDTO.getNewName());
-        }
+
         if(stationEditDTO.getNewCapacity() != 0) {
             int currNrOfBikes = currStation.get().getBikeList().size();
             if(currNrOfBikes > stationEditDTO.getNewCapacity()) {
-                //remove excessive bikes
-                while(currNrOfBikes > stationEditDTO.getNewCapacity()) {
+                while(currNrOfBikes > stationEditDTO.getNewCapacity()) { //remove excessive bikes
                     Bike toRemove = currStation.get().getBikeList().get(0);
-                    if(toRemove.isAvailable()) {
-                        this.removeBike(currStation.get().getName(), toRemove.getExternalId());
-                    }
+                    // remove in db
+                    this.removeBike(currStation.get().getName(), toRemove.getExternalId());
+                    // remove in the object used in the function
+                    currStation.get().getBikeList().remove(toRemove);
+                    currNrOfBikes--;
                 }
             }
             currStation.get().setMaximumCapacity(stationEditDTO.getNewCapacity());
+        }
+
+        if(!stationEditDTO.getNewName().isBlank()) {
+            currStation.get().setName(stationEditDTO.getNewName());
         }
 
         this.stationRepository.save(currStation.get());

@@ -17,7 +17,7 @@ public interface StationService {
 
     void create(StationDTO stationDTO) throws UniqueDBFieldException;
 
-    void delete(String stationName) throws DocumentNotFoundException;
+    void delete(String stationName) throws Exception;
 
     ArrayList<StationGetDTO> getStations();
 
