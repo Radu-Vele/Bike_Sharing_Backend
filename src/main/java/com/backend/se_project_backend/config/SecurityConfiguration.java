@@ -32,7 +32,8 @@ public class SecurityConfiguration {
                 .antMatchers("/signup-admin",
                         "/init-stations-bikes-csv",
                         "/fetch-rides-statistics",
-                        "/create-station-options")
+                        "/create-station-options",
+                        "/fetch-bikes-filtered")
                 .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()

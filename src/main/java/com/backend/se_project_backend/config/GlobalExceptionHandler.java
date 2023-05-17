@@ -105,4 +105,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String bodyOfText = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfText, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
+
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<Object> handleNumberFormatException (NumberFormatException ex, WebRequest request) {
+        String bodyOfText = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfText, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
 }

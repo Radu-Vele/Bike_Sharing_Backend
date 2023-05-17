@@ -1,6 +1,7 @@
 package com.backend.se_project_backend.controller;
 
 import com.backend.se_project_backend.config.jwt.JwtUtility;
+import com.backend.se_project_backend.dto.BikeFiltersDTO;
 import com.backend.se_project_backend.service.BikeService;
 import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeRatingDTO;
@@ -46,4 +47,11 @@ public class BikeController {
         this.stationService.reflectNewRatingInStation(username, bikeRatingDTO.getExternalId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/fetch-bikes-filtered")
+    @CrossOrigin
+    public ResponseEntity<?> fetchBikeData(@RequestBody BikeFiltersDTO bikeFiltersDTO) {
+        return ResponseEntity.ok(bikeService.fetchBikeData(bikeFiltersDTO));
+    }
+    //return all bikes based on filters
 }
