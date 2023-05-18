@@ -1,8 +1,6 @@
 package com.backend.se_project_backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +10,15 @@ public class BikeFiltersDTO {
 
     private String externalId;
 
-    private boolean onlyUsable;
+    private boolean onlyUsable; // TODO: why isn't @Data enough
 
     private boolean onlyNotUsable;
+
+    public boolean getOnlyUsable() {
+        return onlyUsable;
+    }
+
+    public boolean getOnlyNotUsable() {
+        return onlyNotUsable;
+    }
 }

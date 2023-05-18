@@ -158,21 +158,45 @@ public class StationServiceImpl implements StationService {
         }
     }
 
-    @Override
-    public ArrayList<BikeGetDTO> getUsableBikesByStationName(String stationName) throws DocumentNotFoundException {
+    public List<Bike> getBikesByStationName(String stationName) throws DocumentNotFoundException {
         Optional<Station> stationByName = this.stationRepository.findByName(stationName);
-
         if (stationByName.isEmpty()) {
             throw new DocumentNotFoundException("There is no station having the given name in the database.");
         }
+       return stationByName.get().getBikeList();
+    }
 
-        List<Bike> bikesFromStation = stationByName.get().getBikeList();
+    @Override
+    public ArrayList<BikeGetDTO> getUsableBikesByStationName(String stationName) throws DocumentNotFoundException {
+        List<Bike> bikesFromStation = getBikesByStationName(stationName);
         ArrayList<BikeGetDTO> bikeGetDTOs = new ArrayList<>();
         for (Bike bike:
              bikesFromStation) {
             if(bike.isUsable()) {
                 bikeGetDTOs.add(this.modelMapper.map(bike, BikeGetDTO.class));
             }
+        }
+        return bikeGetDTOs;
+    }
+
+    @Override
+    public ArrayList<BikeGetDTO> getNonUsableBikesByStationName(String stationName) throws DocumentNotFoundException {
+        List<Bike> bikesFromStation = getBikesByStationName(stationName);
+        ArrayList<BikeGetDTO> bikeGetDTOs = new ArrayList<>();
+        for (Bike bike:
+                bikesFromStation) {
+            if(!bike.isUsable()) {
+                bikeGetDTOs.add(this.modelMapper.map(bike, BikeGetDTO.class));
+            }
+        }
+        return bikeGetDTOs;
+    }
+
+    private List<BikeGetDTO> getAllBikesByStationName(String stationName) throws DocumentNotFoundException {
+        List<Bike> bikesFromStation = getBikesByStationName(stationName);
+        ArrayList<BikeGetDTO> bikeGetDTOs = new ArrayList<>();
+        for (Bike bike:bikesFromStation) {
+                bikeGetDTOs.add(this.modelMapper.map(bike, BikeGetDTO.class));
         }
         return bikeGetDTOs;
     }
@@ -325,6 +349,86 @@ public class StationServiceImpl implements StationService {
         if(stationDTO.isSaveToCSV()) {
             writeStationToCSV(stationDTO);
         }
+    }
+
+    @Override
+    public List<BikeGetDTO> fetchBikeData(BikeFiltersDTO bikeFiltersDTO) throws Exception {
+        List<BikeGetDTO> bikeList = new ArrayList<>();
+        List<Bike> foundBikes = new ArrayList<>();
+
+        if(bikeFiltersDTO.getExternalId().equals("") && bikeFiltersDTO.getHostStation().equals("") && !bikeFiltersDTO.getOnlyUsable() && !bikeFiltersDTO.getOnlyNotUsable()) { //no filter
+            foundBikes = bikeRepository.findAll();
+        }
+
+        else if(!bikeFiltersDTO.getExternalId().equals("") && bikeFiltersDTO.getHostStation().equals("")) { //id filter specified and station not specified
+            Optional<Bike> foundBike = bikeService.bikeByExternalId(Integer.parseInt(bikeFiltersDTO.getExternalId()));
+            if(foundBike.isPresent()) {
+                if (bikeFiltersDTO.getOnlyUsable()) {
+                    if (foundBike.get().isUsable()) {
+                        foundBikes.add(foundBike.get());
+                    }
+                }
+                else if (bikeFiltersDTO.getOnlyNotUsable()) {
+                    if (!foundBike.get().isUsable()) {
+                        foundBikes.add(foundBike.get());
+                    }
+                }
+                else { //no usability filter
+                    foundBikes.add(foundBike.get());
+                }
+            }
+        }
+
+        else if(!bikeFiltersDTO.getExternalId().equals("") && !bikeFiltersDTO.getHostStation().equals("")) { //id and station given
+            Optional<Bike> foundBike = bikeService.bikeByExternalId(Integer.parseInt(bikeFiltersDTO.getExternalId()));
+            if(foundBike.isPresent()) {
+                Station hostStation = getStationByName(bikeFiltersDTO.getHostStation());
+
+                if (hostStation.getBikeList().contains(foundBike.get())) { // the station contains the bike of the given ID
+                    if(bikeFiltersDTO.getOnlyNotUsable()) {
+                        if (!foundBike.get().isUsable()) {
+                            foundBikes.add(foundBike.get());
+                        }
+                    }
+                    else if (bikeFiltersDTO.getOnlyUsable()) {
+                        if (foundBike.get().isUsable()) {
+                            foundBikes.add(foundBike.get());
+                        }
+                    }
+                }
+            }
+        }
+
+        else if (!bikeFiltersDTO.getHostStation().equals("")) {
+            if (bikeFiltersDTO.getOnlyUsable()) {
+                bikeList = getUsableBikesByStationName(bikeFiltersDTO.getHostStation());
+                return bikeList;
+            }
+            else if (bikeFiltersDTO.getOnlyNotUsable()) {
+                bikeList = getNonUsableBikesByStationName(bikeFiltersDTO.getHostStation());
+                return bikeList;
+            }
+            else {
+                bikeList = getAllBikesByStationName(bikeFiltersDTO.getHostStation());
+                return bikeList;
+            }
+        }
+        else {
+            if (bikeFiltersDTO.getOnlyUsable()) {
+                foundBikes = bikeService.findAllUsable();
+            }
+            else if (bikeFiltersDTO.getOnlyNotUsable()) {
+                foundBikes = bikeService.findAllNonUsable();
+            }
+        }
+
+        for(Bike bike : foundBikes) {
+            BikeGetDTO bikeGetDTO = new BikeGetDTO();
+            modelMapper.map(bike, bikeGetDTO);
+            bikeList.add(bikeGetDTO);
+        }
+
+        return bikeList;
     }
 
 }

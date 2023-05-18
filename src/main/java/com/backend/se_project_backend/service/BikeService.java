@@ -3,7 +3,6 @@ package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeFiltersDTO;
-import com.backend.se_project_backend.dto.BikeGetFullDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 
@@ -23,5 +22,7 @@ public interface BikeService {
 
     public void calculateRating(long externalId, Double currentRating, String username) throws Exception;
 
-    public List<BikeGetFullDTO> fetchBikeData(BikeFiltersDTO bikeFiltersDTO);
+    List<Bike> findAllUsable();
+
+    List<Bike> findAllNonUsable();
 }

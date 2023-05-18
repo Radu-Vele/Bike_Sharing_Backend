@@ -50,8 +50,7 @@ public class BikeController {
 
     @PostMapping("/fetch-bikes-filtered")
     @CrossOrigin
-    public ResponseEntity<?> fetchBikeData(@RequestBody BikeFiltersDTO bikeFiltersDTO) {
-        return ResponseEntity.ok(bikeService.fetchBikeData(bikeFiltersDTO));
+    public ResponseEntity<?> fetchBikeData(@RequestBody BikeFiltersDTO bikeFiltersDTO) throws Exception {
+        return ResponseEntity.ok(stationService.fetchBikeData(bikeFiltersDTO));
     }
-    //return all bikes based on filters
 }

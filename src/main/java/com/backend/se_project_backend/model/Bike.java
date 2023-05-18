@@ -44,4 +44,14 @@ public class Bike {
     public int hashCode() {
         return Objects.hash(id, available, usable, rating);
     }
+
+    public void setRating(Double rating) {
+        if(rating != 0) {
+            this.rating = rating;
+            if (this.rating < 2.5) {
+                this.setUsable(false);
+            }
+        }
+        this.rating = rating;
+    }
 }

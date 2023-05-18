@@ -8,6 +8,7 @@ import com.backend.se_project_backend.utils.exceptions.UniqueDBFieldException;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface StationService {
 
@@ -25,6 +26,8 @@ public interface StationService {
 
     ArrayList<BikeGetDTO> getUsableBikesByStationName(String stationName) throws DocumentNotFoundException;
 
+    ArrayList<BikeGetDTO> getNonUsableBikesByStationName(String stationName) throws DocumentNotFoundException;
+
     ArrayList<StationGetDTO> getUsableStartStations() throws Exception;
 
     ArrayList<StationGetDTO> getFreeEndStations() throws Exception;
@@ -40,4 +43,7 @@ public interface StationService {
     void reflectNewRatingInStation(String username, long editedBikeExternalId) throws Exception;
 
     void createWithOptions(StationOptionsDTO stationDTO) throws Exception;
+
+    public List<BikeGetDTO> fetchBikeData(BikeFiltersDTO bikeFiltersDTO) throws Exception;
+
 }

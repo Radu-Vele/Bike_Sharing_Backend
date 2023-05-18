@@ -11,4 +11,10 @@ import lombok.Setter;
 @Setter
 public class BikeGetDTO extends BikeDTO {
     private long externalId;
+
+    private boolean available; //refers to bike availability (currently in use)
+
+    private boolean usable; //refers to bike condition (broken)
+
+    private Double rating;
 }

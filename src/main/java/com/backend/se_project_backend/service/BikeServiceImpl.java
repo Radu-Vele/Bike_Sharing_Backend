@@ -2,7 +2,6 @@ package com.backend.se_project_backend.service;
 
 import com.backend.se_project_backend.dto.BikeDTO;
 import com.backend.se_project_backend.dto.BikeFiltersDTO;
-import com.backend.se_project_backend.dto.BikeGetFullDTO;
 import com.backend.se_project_backend.dto.BikeRatingDTO;
 import com.backend.se_project_backend.model.Bike;
 import com.backend.se_project_backend.model.Ride;
@@ -56,16 +55,7 @@ public class BikeServiceImpl implements BikeService {
                 bikeById.get().setRating(currentRating); //allow bikes to be initialized with 0 and be usable
             }
             else {
-                if (currentRating == 1) {
-                    bikeById.get().setUsable(false);
-                }
-                else {
-                    bikeById.get().setRating((previousRating + currentRating) / 2);
-                }
-
-                if (bikeById.get().getRating() < 2.5) {
-                    bikeById.get().setUsable(false);
-                }
+                bikeById.get().setRating((previousRating + currentRating) / 2);
             }
 
             bikeRepository.save(bikeById.get());
@@ -76,27 +66,12 @@ public class BikeServiceImpl implements BikeService {
     }
 
     @Override
-    public List<BikeGetFullDTO> fetchBikeData(BikeFiltersDTO bikeFiltersDTO) throws NumberFormatException{
-        List<BikeGetFullDTO> bikeList = new ArrayList<>();
-        if(bikeFiltersDTO.getExternalId().equals("")) {
-            List<Bike> allBikes = bikeRepository.findAll();
-            for(Bike bike : allBikes) {
-                BikeGetFullDTO bikeGetFullDTO = new BikeGetFullDTO();
-                modelMapper.map(bike, bikeGetFullDTO);
-                bikeList.add(bikeGetFullDTO);
-            }
-        }
-        else {
-            Optional<Bike> foundBike = bikeByExternalId(Integer.parseInt(bikeFiltersDTO.getExternalId()));
-            if(foundBike.isPresent()) {
-                BikeGetFullDTO bikeGetFullDTO = new BikeGetFullDTO();
-                modelMapper.map(foundBike.get(), bikeGetFullDTO);
-            }
-        }
+    public List<Bike> findAllUsable() {
+        return bikeRepository.findAllUsable();
+    }
 
-        //TODO: filter by the other fields (may need to move everything in the station controller as we want bikes from station at some point
-        //TODO: revise bike-station relation, need to fetch bikes + station from the station controller
-
-        return bikeList;
+    @Override
+    public List<Bike> findAllNonUsable() {
+        return bikeRepository.findAllNonUsable();
     }
 }
