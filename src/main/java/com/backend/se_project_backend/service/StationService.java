@@ -49,4 +49,6 @@ public interface StationService {
     void removeBikeByExternalId(String bikeId) throws Exception;
 
     void repairBike(String externalId) throws DocumentNotFoundException;
+
+    void makeBikeUnusable(String externalId) throws DocumentNotFoundException;
 }

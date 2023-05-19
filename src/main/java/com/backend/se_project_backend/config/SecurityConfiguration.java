@@ -34,7 +34,8 @@ public class SecurityConfiguration {
                         "/fetch-rides-statistics",
                         "/create-station-options",
                         "/fetch-bikes-filtered",
-                        "/repair-bike")
+                        "/repair-bike",
+                        "/make-bike-unusable")
                 .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()

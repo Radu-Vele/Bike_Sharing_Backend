@@ -435,8 +435,7 @@ public class StationServiceImpl implements StationService {
         // No action if the bike is outside the station
     }
 
-    @Override
-    public void repairBike(String externalId) throws DocumentNotFoundException {
+    public void editBikeUsability(String externalId, boolean usable) throws DocumentNotFoundException {
         Optional<Bike> foundBike = bikeService.bikeByExternalId(Long.parseLong(externalId));
         if(foundBike.isEmpty()) {
             throw new DocumentNotFoundException(StringConstants.BIKE_NOT_FOUND);
@@ -446,14 +445,24 @@ public class StationServiceImpl implements StationService {
             for (Bike bike : station.getBikeList()) {
                 if(bike.getExternalId() == Long.parseLong(externalId)) {
                     bike.setRating(0.0);
-                    bike.setUsable(true);
+                    bike.setUsable(usable);
                 }
             }
             this.stationRepository.save(station); // update station
         }
         foundBike.get().setRating(0.0);
-        foundBike.get().setUsable(true);
+        foundBike.get().setUsable(usable);
         this.bikeRepository.save(foundBike.get());
+    }
+
+    @Override
+    public void repairBike(String externalId) throws DocumentNotFoundException {
+        editBikeUsability(externalId, true);
+    }
+
+    @Override
+    public void makeBikeUnusable(String externalId) throws DocumentNotFoundException {
+        editBikeUsability(externalId, false);
     }
 
     private void checkUsableFilterAndAdd(List<Bike> foundBikes, Optional<Bike> foundBike, boolean onlyNotUsable, boolean b, boolean onlyUsable, boolean usable, BikeFiltersDTO bikeFiltersDTO) {

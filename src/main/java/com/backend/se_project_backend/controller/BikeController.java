@@ -57,6 +57,13 @@ public class BikeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping ("/make-bike-unusable")
+    @CrossOrigin
+    public ResponseEntity<?> makeBikeUnusable(@RequestParam String externalId) throws Exception {
+        this.stationService.makeBikeUnusable(externalId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/fetch-bikes-filtered")
     @CrossOrigin
     public ResponseEntity<?> fetchBikeData(@RequestBody BikeFiltersDTO bikeFiltersDTO) throws Exception {
