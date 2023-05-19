@@ -410,25 +410,50 @@ public class StationServiceImpl implements StationService {
         return bikeList;
     }
 
+    public Station findStationOfBike(Bike bike) throws DocumentNotFoundException {
+        List<Station> stationsList = this.stationRepository.findAll();
+        // find the bike through all stations
+        for(Station station : stationsList) {
+            if (station.getBikeList().contains(bike)) {
+                return station;
+            }
+        }
+        return null;
+    }
 
 
     @Override
     public void removeBikeByExternalId(String bikeId) throws Exception {
-        // fetch bike object
         Optional<Bike> foundBike = bikeService.bikeByExternalId(Long.parseLong(bikeId));
         if(foundBike.isEmpty()) {
             throw new DocumentNotFoundException(StringConstants.BIKE_NOT_FOUND);
         }
-        List<Station> stationsList = this.stationRepository.findAll();
-        // find the bike through all stations
-        for(Station station : stationsList) {
-            if (station.getBikeList().contains(foundBike.get())) {
-                this.removeBike(station.getName(), foundBike.get().getExternalId());
-                return;
-            }
+        Station hostStation = findStationOfBike(foundBike.get());
+        if(hostStation != null) {
+            removeBike(hostStation.getName(), Long.parseLong(bikeId));
         }
+        // No action if the bike is outside the station
+    }
 
-        //no action if the bike is outside all stations, it is still removed.
+    @Override
+    public void repairBike(String externalId) throws DocumentNotFoundException {
+        Optional<Bike> foundBike = bikeService.bikeByExternalId(Long.parseLong(externalId));
+        if(foundBike.isEmpty()) {
+            throw new DocumentNotFoundException(StringConstants.BIKE_NOT_FOUND);
+        }
+        Station station = findStationOfBike(foundBike.get());
+        if (station != null) {
+            for (Bike bike : station.getBikeList()) {
+                if(bike.getExternalId() == Long.parseLong(externalId)) {
+                    bike.setRating(0.0);
+                    bike.setUsable(true);
+                }
+            }
+            this.stationRepository.save(station); // update station
+        }
+        foundBike.get().setRating(0.0);
+        foundBike.get().setUsable(true);
+        this.bikeRepository.save(foundBike.get());
     }
 
     private void checkUsableFilterAndAdd(List<Bike> foundBikes, Optional<Bike> foundBike, boolean onlyNotUsable, boolean b, boolean onlyUsable, boolean usable, BikeFiltersDTO bikeFiltersDTO) {

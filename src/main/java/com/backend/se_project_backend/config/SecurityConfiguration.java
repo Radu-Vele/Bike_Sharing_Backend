@@ -33,7 +33,8 @@ public class SecurityConfiguration {
                         "/init-stations-bikes-csv",
                         "/fetch-rides-statistics",
                         "/create-station-options",
-                        "/fetch-bikes-filtered")
+                        "/fetch-bikes-filtered",
+                        "/repair-bike")
                 .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()

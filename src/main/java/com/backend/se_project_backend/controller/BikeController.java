@@ -50,6 +50,13 @@ public class BikeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping ("/repair-bike")
+    @CrossOrigin
+    public ResponseEntity<?> updateBikeRating(@RequestParam String externalId) throws Exception {
+        this.stationService.repairBike(externalId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/fetch-bikes-filtered")
     @CrossOrigin
     public ResponseEntity<?> fetchBikeData(@RequestBody BikeFiltersDTO bikeFiltersDTO) throws Exception {
