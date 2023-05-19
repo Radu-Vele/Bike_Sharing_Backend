@@ -465,6 +465,19 @@ public class StationServiceImpl implements StationService {
         editBikeUsability(externalId, false);
     }
 
+    @Override
+    public void addFreshBike(String stationName) throws Exception {
+        Station hostStation = getStationByName(stationName);
+        //new bike
+        BikeDTO bikeDTO = new BikeDTO();
+        bikeDTO.setAvailable(false);
+        bikeDTO.setUsable(true);
+        bikeDTO.setRating(0.0);
+        long newBikeExternalId = this.bikeService.create(bikeDTO);
+        //add bike
+        this.addBike(stationName, newBikeExternalId);
+    }
+
     private void checkUsableFilterAndAdd(List<Bike> foundBikes, Optional<Bike> foundBike, boolean onlyNotUsable, boolean b, boolean onlyUsable, boolean usable, BikeFiltersDTO bikeFiltersDTO) {
         if(onlyNotUsable) {
             if (b) {

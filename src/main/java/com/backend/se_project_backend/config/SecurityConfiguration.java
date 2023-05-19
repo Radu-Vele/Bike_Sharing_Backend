@@ -35,7 +35,8 @@ public class SecurityConfiguration {
                         "/create-station-options",
                         "/fetch-bikes-filtered",
                         "/repair-bike",
-                        "/make-bike-unusable")
+                        "/make-bike-unusable",
+                        "/add-fresh-bike")
                 .hasAnyAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()

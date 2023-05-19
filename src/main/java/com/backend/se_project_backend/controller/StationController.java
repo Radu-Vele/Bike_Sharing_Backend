@@ -103,4 +103,11 @@ public class StationController {
         stationService.importStationsBikesInit();
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PostMapping("/add-fresh-bike")
+    @CrossOrigin
+    public ResponseEntity<?>  addFreshBike(@RequestParam String stationName) throws Exception {
+        stationService.addFreshBike(stationName);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }
