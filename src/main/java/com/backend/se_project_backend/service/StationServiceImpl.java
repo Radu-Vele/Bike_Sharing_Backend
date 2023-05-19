@@ -363,19 +363,7 @@ public class StationServiceImpl implements StationService {
         else if(!bikeFiltersDTO.getExternalId().equals("") && bikeFiltersDTO.getHostStation().equals("")) { //id filter specified and station not specified
             Optional<Bike> foundBike = bikeService.bikeByExternalId(Integer.parseInt(bikeFiltersDTO.getExternalId()));
             if(foundBike.isPresent()) {
-                if (bikeFiltersDTO.getOnlyUsable()) {
-                    if (foundBike.get().isUsable()) {
-                        foundBikes.add(foundBike.get());
-                    }
-                }
-                else if (bikeFiltersDTO.getOnlyNotUsable()) {
-                    if (!foundBike.get().isUsable()) {
-                        foundBikes.add(foundBike.get());
-                    }
-                }
-                else { //no usability filter
-                    foundBikes.add(foundBike.get());
-                }
+                checkUsableFilterAndAdd(foundBikes, foundBike, bikeFiltersDTO.getOnlyUsable(), foundBike.get().isUsable(), bikeFiltersDTO.getOnlyNotUsable(), !foundBike.get().isUsable(), bikeFiltersDTO);
             }
         }
 
@@ -385,16 +373,7 @@ public class StationServiceImpl implements StationService {
                 Station hostStation = getStationByName(bikeFiltersDTO.getHostStation());
 
                 if (hostStation.getBikeList().contains(foundBike.get())) { // the station contains the bike of the given ID
-                    if(bikeFiltersDTO.getOnlyNotUsable()) {
-                        if (!foundBike.get().isUsable()) {
-                            foundBikes.add(foundBike.get());
-                        }
-                    }
-                    else if (bikeFiltersDTO.getOnlyUsable()) {
-                        if (foundBike.get().isUsable()) {
-                            foundBikes.add(foundBike.get());
-                        }
-                    }
+                    checkUsableFilterAndAdd(foundBikes, foundBike, bikeFiltersDTO.getOnlyNotUsable(), !foundBike.get().isUsable(), bikeFiltersDTO.getOnlyUsable(), foundBike.get().isUsable(), bikeFiltersDTO);
                 }
             }
         }
@@ -429,6 +408,22 @@ public class StationServiceImpl implements StationService {
         }
 
         return bikeList;
+    }
+
+    private void checkUsableFilterAndAdd(List<Bike> foundBikes, Optional<Bike> foundBike, boolean onlyNotUsable, boolean b, boolean onlyUsable, boolean usable, BikeFiltersDTO bikeFiltersDTO) {
+        if(onlyNotUsable) {
+            if (b) {
+                foundBikes.add(foundBike.get());
+            }
+        }
+        else if (onlyUsable) {
+            if (usable) {
+                foundBikes.add(foundBike.get());
+            }
+        }
+        else {
+            foundBikes.add(foundBike.get());
+        }
     }
 
 }
