@@ -410,6 +410,27 @@ public class StationServiceImpl implements StationService {
         return bikeList;
     }
 
+
+
+    @Override
+    public void removeBikeByExternalId(String bikeId) throws Exception {
+        // fetch bike object
+        Optional<Bike> foundBike = bikeService.bikeByExternalId(Long.parseLong(bikeId));
+        if(foundBike.isEmpty()) {
+            throw new DocumentNotFoundException(StringConstants.BIKE_NOT_FOUND);
+        }
+        List<Station> stationsList = this.stationRepository.findAll();
+        // find the bike through all stations
+        for(Station station : stationsList) {
+            if (station.getBikeList().contains(foundBike.get())) {
+                this.removeBike(station.getName(), foundBike.get().getExternalId());
+                return;
+            }
+        }
+
+        //no action if the bike is outside all stations, it is still removed.
+    }
+
     private void checkUsableFilterAndAdd(List<Bike> foundBikes, Optional<Bike> foundBike, boolean onlyNotUsable, boolean b, boolean onlyUsable, boolean usable, BikeFiltersDTO bikeFiltersDTO) {
         if(onlyNotUsable) {
             if (b) {

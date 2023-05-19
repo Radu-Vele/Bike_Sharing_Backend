@@ -46,4 +46,5 @@ public interface StationService {
 
     public List<BikeGetDTO> fetchBikeData(BikeFiltersDTO bikeFiltersDTO) throws Exception;
 
+    void removeBikeByExternalId(String bikeId) throws Exception;
 }

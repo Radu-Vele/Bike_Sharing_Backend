@@ -11,4 +11,6 @@ public class StringConstants {
     //Exceptions messages
     public static final String EX_MAIL_NOT_SENT = "info: Unfortunately the confirmation email was not sent. However, registration was successful";
     public static final String STATION_NOT_FOUND = "There is no station having the given name";
+    public static final String BIKE_NOT_FOUND = "There is no station having the given name";
+    public static final String BIKE_OUTSIDE_STATION = "The bike outside all stations";
 }

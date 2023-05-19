@@ -11,6 +11,10 @@ import com.backend.se_project_backend.repository.BikeRepository;
 import com.backend.se_project_backend.utils.exceptions.DocumentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,6 +33,8 @@ public class BikeServiceImpl implements BikeService {
 
     private final SequenceGeneratorService sequenceGeneratorService;
 
+    private final MongoTemplate mongoTemplate;
+
     @Override public Optional<Bike> bikeByExternalId(long externalId) {
         return this.bikeRepository.findByExternalId(externalId);
     }
@@ -37,13 +43,13 @@ public class BikeServiceImpl implements BikeService {
     public long create(BikeDTO bikeDTO) {
         Bike bike = this.modelMapper.map(bikeDTO, Bike.class);
         bike.setExternalId(sequenceGeneratorService.generateSequence(Bike.SEQUENCE_NAME));
-        //TODO: check uniqueness of the external ID.
         return this.bikeRepository.save(bike).getExternalId();
     }
 
     @Override
     public void delete(String bikeId) {
-        this.bikeRepository.deleteById(bikeId);
+        Query query = new Query(Criteria.where("externalId").is(Long.parseLong(bikeId)));
+        mongoTemplate.remove(query, Bike.class, "bikes");
     }
 
     @Override

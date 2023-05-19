@@ -34,7 +34,9 @@ public class BikeController {
 
     @DeleteMapping("/delete-bike")
     @CrossOrigin
-    public ResponseEntity<?> deleteBike(@RequestParam String bikeId) {
+    public ResponseEntity<?> deleteBike(@RequestParam String bikeId) throws Exception {
+        //find its station and delete
+        this.stationService.removeBikeByExternalId(bikeId);
         this.bikeService.delete(bikeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
